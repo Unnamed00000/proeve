@@ -1,145 +1,41 @@
+const svgImage = (title,subtitle,path,labels='') => `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 360"><rect width="900" height="360" fill="#fff7f7"/><path d="M0 40H900M0 80H900M0 120H900M0 160H900M0 200H900M0 240H900M0 280H900M0 320H900M45 0V360M90 0V360M135 0V360M180 0V360M225 0V360M270 0V360M315 0V360M360 0V360M405 0V360M450 0V360M495 0V360M540 0V360M585 0V360M630 0V360M675 0V360M720 0V360M765 0V360M810 0V360M855 0V360" stroke="#f3b0b0" stroke-width="1"/><path d="M0 200H900M225 0V360M450 0V360M675 0V360" stroke="#e07f7f" stroke-width="2"/><text x="35" y="42" font-family="Arial" font-size="28" font-weight="700" fill="#111">${title}</text><text x="35" y="75" font-family="Arial" font-size="20" fill="#333">${subtitle}</text><path d="${path}" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>${labels}</svg>`)}`;
+
+const ECG_IMAGES = {
+  first: svgImage('1. grads AV-blok','PR-interval > 200 ms, alle P-takker ledes','M30 215 L90 215 C105 180 125 180 140 215 L230 215 L245 185 L260 85 L280 260 L300 215 L390 215 C405 180 425 180 440 215 L530 215 L545 185 L560 85 L580 260 L600 215 L690 215 C705 180 725 180 740 215 L830 215 L845 185 L860 85 L880 260','<text x="105" y="250" font-family="Arial" font-size="18" fill="#174f9c">lang PR</text><text x="405" y="250" font-family="Arial" font-size="18" fill="#174f9c">lang PR</text><text x="705" y="250" font-family="Arial" font-size="18" fill="#174f9c">lang PR</text>'),
+  mobitz1: svgImage('Mobitz type I','Progressiv PR-forlængelse, derefter tabt QRS','M30 215 L90 215 C105 180 125 180 140 215 L225 215 L240 185 L255 85 L275 260 L295 215 L385 215 C400 180 420 180 435 215 L550 215 L565 185 L580 85 L600 260 L620 215 L700 215 C715 180 735 180 750 215 L860 215','<text x="95" y="252" font-family="Arial" font-size="18" fill="#174f9c">PR</text><text x="390" y="252" font-family="Arial" font-size="18" fill="#174f9c">længere PR</text><text x="705" y="252" font-family="Arial" font-size="18" fill="#b00020">ingen QRS</text>'),
+  mobitz2: svgImage('Mobitz type II','Ikke-ledt P-tak uden progressiv PR-forlængelse','M30 215 L90 215 C105 180 125 180 140 215 L225 215 L240 185 L255 85 L275 260 L295 215 L385 215 C400 180 420 180 435 215 L520 215 L535 185 L550 85 L570 260 L590 215 L690 215 C705 180 725 180 740 215 L860 215','<text x="95" y="252" font-family="Arial" font-size="18" fill="#174f9c">PR</text><text x="390" y="252" font-family="Arial" font-size="18" fill="#174f9c">PR</text><text x="700" y="252" font-family="Arial" font-size="18" fill="#b00020">ingen QRS</text>'),
+  third: svgImage('3. grads AV-blok','Ingen relation mellem P-takker og QRS-komplekser','M30 215 L90 215 C105 180 125 180 140 215 L210 215 C225 180 245 180 260 215 L330 215 L345 185 L360 85 L380 260 L400 215 L470 215 C485 180 505 180 520 215 L600 215 C615 180 635 180 650 215 L725 215 L740 185 L755 85 L775 260 L795 215 L860 215','<text x="98" y="250" font-family="Arial" font-size="18" fill="#174f9c">P</text><text x="220" y="250" font-family="Arial" font-size="18" fill="#174f9c">P</text><text x="480" y="250" font-family="Arial" font-size="18" fill="#174f9c">P</text><text x="610" y="250" font-family="Arial" font-size="18" fill="#174f9c">P</text>'),
+  wpw: svgImage('WPW','Kort PR-interval, deltabølge og bredere QRS','M30 215 L115 215 C130 180 150 180 165 215 L210 215 C245 170 270 130 300 85 L325 260 L350 215 L440 215 C470 160 530 160 560 215 L860 215','<text x="210" y="150" font-family="Arial" font-size="18" fill="#b00020">deltabølge</text><text x="115" y="252" font-family="Arial" font-size="18" fill="#174f9c">kort PR</text>')
+};
+
 const EKG_IMAGE_QUESTIONS = {
-  id: "ekg-billeder",
-  title: "EKG-billeder",
-  description: "Træn genkendelse af AV-blokke og WPW ud fra EKG-billeder og mønstre.",
+  id: 'ekg-billeder',
+  title: 'EKG-billeder',
+  description: 'Træn genkendelse af AV-blokke og WPW ud fra EKG-billeder.',
   questions: [
-    {
-      text: "På et EKG-billede ses et PR-interval over 200 ms, men hver P-tak efterfølges af et QRS-kompleks. Hvilken diagnose passer bedst?",
-      options: ["1. grads AV-blok", "Mobitz type I", "3. grads AV-blok", "WPW"],
-      answer: 0,
-      explanation: "1. grads AV-blok viser forlænget PR-interval over 200 ms, men der er stadig et QRS-kompleks efter hver P-tak."
-    },
-    {
-      text: "På et EKG-billede bliver PR-intervallet længere og længere, indtil et QRS-kompleks falder ud. Hvad kaldes dette?",
-      options: ["Mobitz type I", "Mobitz type II", "1. grads AV-blok", "WPW"],
-      answer: 0,
-      explanation: "Mobitz type I, også kaldet Wenckebach, kendetegnes ved progressiv PR-forlængelse før et tabt QRS-kompleks."
-    },
-    {
-      text: "På et EKG-billede ses en P-tak uden efterfølgende QRS-kompleks, men uden progressiv PR-forlængelse. Hvilken diagnose passer bedst?",
-      options: ["Mobitz type II", "Mobitz type I", "1. grads AV-blok", "Sinusrytme"],
-      answer: 0,
-      explanation: "Mobitz type II har intermitterende ikke-ledte P-takker uden gradvis PR-forlængelse."
-    },
-    {
-      text: "På et EKG-billede ses ingen fast relation mellem P-takker og QRS-komplekser. Hvad tyder det mest på?",
-      options: ["3. grads AV-blok", "1. grads AV-blok", "WPW", "Mobitz type I"],
-      answer: 0,
-      explanation: "Ved 3. grads AV-blok er atrier og ventrikler elektrisk adskilt, så P-takker og QRS-komplekser har ingen fast relation."
-    },
-    {
-      text: "På et EKG-billede ses kort PR-interval og deltabølge. Hvilken tilstand passer bedst?",
-      options: ["WPW", "1. grads AV-blok", "Mobitz type II", "3. grads AV-blok"],
-      answer: 0,
-      explanation: "WPW kendetegnes blandt andet ved kort PR-interval og deltabølge på grund af en accessorisk ledningsbane."
-    },
-    {
-      text: "Hvilket fund på et EKG-billede er mest karakteristisk for WPW?",
-      options: ["Deltabølge", "PR-interval over 200 ms", "Progressiv PR-forlængelse", "Ingen relation mellem P og QRS"],
-      answer: 0,
-      explanation: "Deltabølgen er et vigtigt visuelt tegn ved WPW og viser tidlig aktivering af ventriklerne."
-    },
-    {
-      text: "Hvis billedet viser PR-interval under 120 ms sammen med bredere QRS-kompleks, hvad skal man især tænke på?",
-      options: ["WPW", "1. grads AV-blok", "Mobitz type I", "Mobitz type II"],
-      answer: 0,
-      explanation: "I materialet beskrives WPW med PR-interval under 120 ms, deltabølge og QRS-forlængelse over 110 ms."
-    },
-    {
-      text: "Hvilket EKG-billede passer bedst med 1. grads AV-blok?",
-      options: ["Et billede med konstant forlænget PR-interval", "Et billede med deltabølge", "Et billede uden relation mellem P og QRS", "Et billede med pludselige tabte QRS uden PR-forlængelse"],
-      answer: 0,
-      explanation: "1. grads AV-blok viser et konstant forlænget PR-interval uden tabte QRS-komplekser."
-    },
-    {
-      text: "Hvilket EKG-billede passer bedst med Mobitz type I?",
-      options: ["Et billede hvor PR-intervallet gradvist bliver længere før et tabt QRS", "Et billede med kort PR og deltabølge", "Et billede hvor P og QRS er helt uafhængige", "Et billede med konstant PR over 200 ms uden tabte slag"],
-      answer: 0,
-      explanation: "Mobitz type I genkendes visuelt ved gradvis PR-forlængelse, indtil et QRS-kompleks mangler."
-    },
-    {
-      text: "Hvilket EKG-billede passer bedst med Mobitz type II?",
-      options: ["Et billede med intermitterende ikke-ledte P-takker uden progressiv PR-forlængelse", "Et billede med gradvis PR-forlængelse", "Et billede med konstant PR over 200 ms", "Et billede med deltabølge"],
-      answer: 0,
-      explanation: "Mobitz type II har tabte QRS-komplekser, men ikke den gradvise PR-forlængelse, som ses ved Mobitz type I."
-    },
-    {
-      text: "Hvilket EKG-billede passer bedst med 3. grads AV-blok?",
-      options: ["Et billede hvor P-takker og QRS-komplekser går uafhængigt af hinanden", "Et billede med kort PR-interval", "Et billede med kun forlænget PR-interval", "Et billede med deltabølge"],
-      answer: 0,
-      explanation: "3. grads AV-blok er komplet AV-blok med AV-dissociation, så P-takker og QRS-komplekser har ingen fast sammenhæng."
-    },
-    {
-      text: "På et EKG-billede er P-takken markeret, men der kommer ikke QRS bagefter. Hvad beskriver dette bedst?",
-      options: ["Ikke-ledt P-tak", "Deltabølge", "Normal AV-ledning", "Forkortet PR-interval"],
-      answer: 0,
-      explanation: "En ikke-ledt P-tak betyder, at atriet aktiveres, men impulsen ikke ledes videre til ventriklerne, så QRS mangler."
-    },
-    {
-      text: "Hvilket fund er mest visuelt vigtigt, når man skal skelne Mobitz I fra Mobitz II?",
-      options: ["Om PR-intervallet gradvist forlænges før det tabte QRS", "Om T-takken er positiv", "Om R-takken er høj", "Om QRS altid er smalt"],
-      answer: 0,
-      explanation: "Det afgørende visuelle skel er, om PR-intervallet bliver længere og længere før det tabte QRS. Det taler for Mobitz I."
-    },
-    {
-      text: "På et billede med WPW står der 'accessory pathway'. Hvad betyder det i denne sammenhæng?",
-      options: ["En ekstra ledningsbane mellem atrier og ventrikler", "En total blokering i AV-knuden", "En normal forsinkelse i AV-knuden", "En manglende P-tak"],
-      answer: 0,
-      explanation: "WPW skyldes en accessorisk ledningsbane, som kan aktivere ventriklerne tidligere end normalt."
-    },
-    {
-      text: "Hvad er den mest sandsynlige diagnose, hvis EKG-billedet viser PR-interval > 200 ms og ingen tabte QRS-komplekser?",
-      options: ["1. grads AV-blok", "Mobitz type I", "Mobitz type II", "WPW"],
-      answer: 0,
-      explanation: "Forlænget PR-interval uden tabte QRS-komplekser passer bedst med 1. grads AV-blok."
-    },
-    {
-      text: "Hvad er den mest sandsynlige diagnose, hvis EKG-billedet viser deltabølge og PR-interval < 120 ms?",
-      options: ["WPW", "3. grads AV-blok", "Mobitz type I", "1. grads AV-blok"],
-      answer: 0,
-      explanation: "Kort PR-interval sammen med deltabølge er klassisk for WPW."
-    },
-    {
-      text: "Hvad er den mest sandsynlige diagnose, hvis EKG-billedet viser progressiv PR-forlængelse og derefter en pause uden QRS?",
-      options: ["Mobitz type I", "Mobitz type II", "WPW", "1. grads AV-blok"],
-      answer: 0,
-      explanation: "Progressiv PR-forlængelse efterfulgt af tabt QRS-kompleks er Mobitz type I."
-    },
-    {
-      text: "Hvad er den mest sandsynlige diagnose, hvis EKG-billedet viser flere P-takker end QRS-komplekser uden fast sammenhæng?",
-      options: ["3. grads AV-blok", "1. grads AV-blok", "WPW", "Normal sinusrytme"],
-      answer: 0,
-      explanation: "Når P-takker og QRS-komplekser ikke har fast relation, passer det med 3. grads AV-blok."
-    },
-    {
-      text: "Hvilket billede ville bedst vise 'no relationship between P waves and QRS complexes'?",
-      options: ["3. grads AV-blok", "1. grads AV-blok", "Mobitz type I", "WPW"],
-      answer: 0,
-      explanation: "Udtrykket 'no relationship between P waves and QRS complexes' beskriver komplet AV-blok, altså 3. grads AV-blok."
-    },
-    {
-      text: "Hvilket billede ville bedst vise 'progressive prolongation of the PR interval until a QRS complex is dropped'?",
-      options: ["Mobitz type I", "Mobitz type II", "WPW", "3. grads AV-blok"],
-      answer: 0,
-      explanation: "Denne formulering beskriver Mobitz type I."
-    }
+    {text:'Hvad viser dette EKG-billede?',image:ECG_IMAGES.first,options:['1. grads AV-blok','Mobitz type I','3. grads AV-blok','WPW'],answer:0,explanation:'Forlænget PR-interval over 200 ms uden tabte QRS-komplekser passer bedst med 1. grads AV-blok.'},
+    {text:'Hvad viser dette EKG-billede?',image:ECG_IMAGES.mobitz1,options:['Mobitz type I','Mobitz type II','WPW','1. grads AV-blok'],answer:0,explanation:'Mobitz type I viser progressiv PR-forlængelse, indtil et QRS-kompleks falder ud.'},
+    {text:'Hvad viser dette EKG-billede?',image:ECG_IMAGES.mobitz2,options:['Mobitz type II','Mobitz type I','1. grads AV-blok','Sinusrytme'],answer:0,explanation:'Mobitz type II har intermitterende ikke-ledte P-takker uden progressiv PR-forlængelse.'},
+    {text:'Hvad viser dette EKG-billede?',image:ECG_IMAGES.third,options:['3. grads AV-blok','1. grads AV-blok','Mobitz type I','WPW'],answer:0,explanation:'Ved 3. grads AV-blok er der ingen fast relation mellem P-takker og QRS-komplekser.'},
+    {text:'Hvad viser dette EKG-billede?',image:ECG_IMAGES.wpw,options:['WPW','Mobitz type II','3. grads AV-blok','1. grads AV-blok'],answer:0,explanation:'WPW kendetegnes blandt andet ved kort PR-interval og deltabølge.'},
+    {text:'Hvilket fund er markeret på WPW-billedet?',image:ECG_IMAGES.wpw,options:['Deltabølge','Forlænget PR-interval','Tabt QRS-kompleks','AV-dissociation'],answer:0,explanation:'Deltabølgen er et vigtigt visuelt tegn ved WPW.'},
+    {text:'Hvilken diagnose passer til kort PR-interval, deltabølge og bredere QRS?',image:ECG_IMAGES.wpw,options:['WPW','1. grads AV-blok','Mobitz type I','Mobitz type II'],answer:0,explanation:'I materialet beskrives WPW med PR-interval under 120 ms, deltabølge og QRS-forlængelse over 110 ms.'},
+    {text:'Hvilket billede passer bedst med 1. grads AV-blok?',image:ECG_IMAGES.first,options:['Konstant forlænget PR-interval','Deltabølge','Ingen relation mellem P og QRS','Pludselige tabte QRS uden PR-forlængelse'],answer:0,explanation:'1. grads AV-blok viser konstant forlænget PR-interval uden tabte QRS-komplekser.'},
+    {text:'Hvilket billede passer bedst med Mobitz type I?',image:ECG_IMAGES.mobitz1,options:['Gradvis PR-forlængelse før tabt QRS','Kort PR og deltabølge','P og QRS er helt uafhængige','Konstant PR over 200 ms uden tabte slag'],answer:0,explanation:'Mobitz type I genkendes visuelt ved gradvis PR-forlængelse før et manglende QRS.'},
+    {text:'Hvilket billede passer bedst med Mobitz type II?',image:ECG_IMAGES.mobitz2,options:['Ikke-ledte P-takker uden progressiv PR-forlængelse','Gradvis PR-forlængelse','Konstant PR over 200 ms','Deltabølge'],answer:0,explanation:'Mobitz type II har tabte QRS-komplekser uden den gradvise PR-forlængelse fra Mobitz I.'},
+    {text:'Hvilket billede passer bedst med 3. grads AV-blok?',image:ECG_IMAGES.third,options:['P-takker og QRS går uafhængigt af hinanden','Kort PR-interval','Kun forlænget PR-interval','Deltabølge'],answer:0,explanation:'3. grads AV-blok er komplet AV-blok med AV-dissociation.'},
+    {text:'P-takken er markeret, men der kommer ikke QRS bagefter. Hvad beskriver dette bedst?',image:ECG_IMAGES.mobitz2,options:['Ikke-ledt P-tak','Deltabølge','Normal AV-ledning','Forkortet PR-interval'],answer:0,explanation:'En ikke-ledt P-tak betyder, at atriet aktiveres, men impulsen ikke ledes videre til ventriklerne.'},
+    {text:'Hvad er vigtigst for at skelne Mobitz I fra Mobitz II?',image:ECG_IMAGES.mobitz1,options:['Om PR-intervallet gradvist forlænges før tabt QRS','Om T-takken er positiv','Om R-takken er høj','Om QRS altid er smalt'],answer:0,explanation:'Det afgørende visuelle skel er progressiv PR-forlængelse før et tabt QRS.'},
+    {text:'Hvad betyder accessory pathway ved WPW?',image:ECG_IMAGES.wpw,options:['En ekstra ledningsbane mellem atrier og ventrikler','Total blokering i AV-knuden','Normal forsinkelse i AV-knuden','Manglende P-tak'],answer:0,explanation:'WPW skyldes en accessorisk ledningsbane, som kan aktivere ventriklerne tidligere end normalt.'},
+    {text:'Hvad er mest sandsynligt ved PR-interval > 200 ms og ingen tabte QRS?',image:ECG_IMAGES.first,options:['1. grads AV-blok','Mobitz type I','Mobitz type II','WPW'],answer:0,explanation:'Forlænget PR-interval uden tabte QRS-komplekser passer bedst med 1. grads AV-blok.'},
+    {text:'Hvad er mest sandsynligt ved deltabølge og PR-interval < 120 ms?',image:ECG_IMAGES.wpw,options:['WPW','3. grads AV-blok','Mobitz type I','1. grads AV-blok'],answer:0,explanation:'Kort PR-interval sammen med deltabølge er klassisk for WPW.'},
+    {text:'Hvad er mest sandsynligt ved progressiv PR-forlængelse og pause uden QRS?',image:ECG_IMAGES.mobitz1,options:['Mobitz type I','Mobitz type II','WPW','1. grads AV-blok'],answer:0,explanation:'Progressiv PR-forlængelse efterfulgt af tabt QRS-kompleks er Mobitz type I.'},
+    {text:'Hvad er mest sandsynligt, hvis P-takker og QRS-komplekser ikke har fast sammenhæng?',image:ECG_IMAGES.third,options:['3. grads AV-blok','1. grads AV-blok','WPW','Normal sinusrytme'],answer:0,explanation:'Når P-takker og QRS-komplekser ikke har fast relation, passer det med 3. grads AV-blok.'},
+    {text:'Hvilket billede viser no relationship between P waves and QRS complexes?',image:ECG_IMAGES.third,options:['3. grads AV-blok','1. grads AV-blok','Mobitz type I','WPW'],answer:0,explanation:'Udtrykket beskriver komplet AV-blok, altså 3. grads AV-blok.'},
+    {text:'Hvilket billede viser progressive prolongation of the PR interval until a QRS complex is dropped?',image:ECG_IMAGES.mobitz1,options:['Mobitz type I','Mobitz type II','WPW','3. grads AV-blok'],answer:0,explanation:'Denne formulering beskriver Mobitz type I.'}
   ]
 };
 
-function cloneQuestion(question) {
-  return {
-    text: question.text,
-    options: [...question.options],
-    answer: question.answer,
-    explanation: question.explanation
-  };
-}
-
+function cloneQuestion(question){return {text:question.text,image:question.image||'',options:[...question.options],answer:question.answer,explanation:question.explanation};}
 QUIZ_MATERIALS.push(EKG_IMAGE_QUESTIONS);
-
-QUIZ_MATERIALS.push({
-  id: "blandet-ekg-test",
-  title: "Blandet EKG Test",
-  description: "Alle EKG-spørgsmål samlet i én blandet test. Spørgsmål og svar blandes ved hver start.",
-  questions: QUIZ_MATERIALS.flatMap((material) => material.questions.map(cloneQuestion))
-});
+QUIZ_MATERIALS.push({id:'blandet-ekg-test',title:'Blandet EKG Test',description:'Alle EKG-spørgsmål samlet i én blandet test. Spørgsmål og svar blandes ved hver start.',questions:QUIZ_MATERIALS.flatMap((material)=>material.questions.map(cloneQuestion))});
