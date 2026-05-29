@@ -12,6 +12,7 @@ const answersList = document.querySelector("#answersList");
 const feedbackText = document.querySelector("#feedbackText");
 const prevQuestion = document.querySelector("#prevQuestion");
 const nextQuestion = document.querySelector("#nextQuestion");
+const resetQuizButton = document.querySelector("#resetQuiz");
 
 const letters = ["A", "B", "C", "D"];
 let currentMaterial = null;
@@ -183,16 +184,11 @@ nextQuestion.addEventListener("click", () => {
 });
 
 backToMaterials.addEventListener("click", closeMaterial);
-
-document.addEventListener("click", (event) => {
-  if (event.target && event.target.id === "resetQuiz") {
-    resetQuiz();
-  }
-});
+resetQuizButton.addEventListener("click", resetQuiz);
 
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js");
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    registrations.forEach((registration) => registration.unregister());
   });
 }
 
