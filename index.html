@@ -27,8 +27,8 @@
 
       <section class="screen" id="materialsScreen">
         <div class="intro">
-          <h2>Vælg et emne</h2>
-          <p>Åbn et emne, svar med A, B, C eller D, og brug forklaringerne til at repetere stoffet.</p>
+          <h2>📁 EKG repetition</h2>
+          <p>Vælg en kategori. Spørgsmål og svarmuligheder bliver blandet på ny hver gang, så rækkefølgen ikke kan læres udenad.</p>
         </div>
         <div class="materials-grid" id="materialsGrid"></div>
       </section>
@@ -39,7 +39,10 @@
             <p class="eyebrow" id="materialLabel">Emne</p>
             <h2 id="questionCounter">Spørgsmål 1</h2>
           </div>
-          <div class="score-pill" id="scorePill">0 / 0</div>
+          <div class="quiz-actions">
+            <button class="secondary-button reset-button" id="resetQuiz" type="button">Nulstil</button>
+            <div class="score-pill" id="scorePill">0 / 0</div>
+          </div>
         </div>
 
         <div class="progress-track" aria-hidden="true">
@@ -57,6 +60,8 @@
           <button class="primary-button" id="nextQuestion" type="button">Næste side</button>
         </nav>
       </section>
+
+      <footer class="app-footer">Dette program er lavet af Adam Margoev.</footer>
     </main>
 
     <script src="questions.js"></script>
