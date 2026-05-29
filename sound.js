@@ -41,28 +41,71 @@ window.medicalTrainingSound = (() => {
     }
   }
 
-  function addToggle() {
-    if (document.querySelector('#soundToggle')) return;
+  function addSettings() {
+    if (document.querySelector('#settingsButton')) return;
     const topbar = document.querySelector('.topbar');
     if (!topbar) return;
 
     const btn = document.createElement('button');
-    btn.id = 'soundToggle';
-    btn.className = 'sound-toggle';
+    btn.id = 'settingsButton';
+    btn.className = 'settings-button';
     btn.type = 'button';
-    btn.textContent = enabled ? 'Lyd: Til' : 'Lyd: Fra';
+    btn.setAttribute('aria-label', 'Indstillinger');
+    btn.textContent = '⚙';
+
+    const panel = document.createElement('div');
+    panel.id = 'settingsPanel';
+    panel.className = 'settings-panel hidden';
+    panel.innerHTML = `
+      <div class="settings-card">
+        <div class="settings-head">
+          <strong>Indstillinger</strong>
+          <button type="button" class="settings-close" aria-label="Luk">×</button>
+        </div>
+        <div class="settings-section">
+          <h4>Sounds</h4>
+          <button type="button" id="soundSwitch" class="sound-switch"></button>
+        </div>
+      </div>
+    `;
+
+    topbar.appendChild(btn);
+    document.body.appendChild(panel);
+
+    const soundSwitch = panel.querySelector('#soundSwitch');
+    const closeBtn = panel.querySelector('.settings-close');
+
+    function updateSwitch() {
+      soundSwitch.textContent = enabled ? 'Lyd: Til' : 'Lyd: Fra';
+      soundSwitch.classList.toggle('off', !enabled);
+    }
+
     btn.addEventListener('click', () => {
+      panel.classList.toggle('hidden');
+      play('open');
+    });
+
+    closeBtn.addEventListener('click', () => {
+      panel.classList.add('hidden');
+      play('back');
+    });
+
+    panel.addEventListener('click', (event) => {
+      if (event.target === panel) panel.classList.add('hidden');
+    });
+
+    soundSwitch.addEventListener('click', () => {
       enabled = !enabled;
       localStorage.setItem('medicalTrainingSound', enabled ? 'on' : 'off');
-      btn.textContent = enabled ? 'Lyd: Til' : 'Lyd: Fra';
+      updateSwitch();
       if (enabled) play('open');
     });
 
-    topbar.appendChild(btn);
+    updateSwitch();
   }
 
-  document.addEventListener('DOMContentLoaded', addToggle);
-  window.addEventListener('load', addToggle);
+  document.addEventListener('DOMContentLoaded', addSettings);
+  window.addEventListener('load', addSettings);
 
-  return { play, addToggle };
+  return { play, addSettings };
 })();
