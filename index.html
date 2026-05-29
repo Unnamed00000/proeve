@@ -6,8 +6,8 @@
     <meta name="theme-color" content="#176b5d">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="EKG Quiz">
-    <title>EKG repetition</title>
+    <meta name="apple-mobile-web-app-title" content="Medicinsk Træning">
+    <title>Medicinsk Uddannelsesplatform</title>
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="apple-touch-icon" href="icons/icon.svg">
     <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
@@ -16,18 +16,68 @@
   <body>
     <main class="app-shell">
       <header class="topbar">
-        <button class="icon-button hidden" id="backToMaterials" type="button" aria-label="Tilbage til emner">
+        <button class="icon-button hidden" id="backToMaterials" type="button" aria-label="Tilbage">
           <span aria-hidden="true">‹</span>
         </button>
         <div>
-          <p class="eyebrow">Personlig træning</p>
-          <h1 id="screenTitle">EKG repetition</h1>
+          <p class="eyebrow">Medicinsk træning</p>
+          <h1 id="screenTitle">Medicinsk Uddannelses- og Træningsplatform</h1>
         </div>
       </header>
 
-      <section class="screen" id="materialsScreen">
+      <section class="screen" id="homeScreen">
         <div class="intro">
-          <h2>📁 EKG repetition</h2>
+          <h2>Vælg et område</h2>
+          <p>Start med EKG-repetition. Flere medicinske områder bliver tilføjet senere.</p>
+        </div>
+
+        <div class="folders-grid">
+          <button class="folder-card active-folder" id="openEkgFolder" type="button">
+            <span class="folder-icon">📁</span>
+            <span class="folder-title">EKG-repetition</span>
+            <span class="folder-text">Repetér EKG, AV-blokke og WPW.</span>
+          </button>
+
+          <button class="folder-card disabled-folder" type="button" disabled>
+            <span class="folder-icon">📁</span>
+            <span class="folder-title">Farmakologi</span>
+            <span class="folder-text">Under udvikling</span>
+          </button>
+
+          <button class="folder-card disabled-folder" type="button" disabled>
+            <span class="folder-icon">📁</span>
+            <span class="folder-title">Anatomi</span>
+            <span class="folder-text">Under udvikling</span>
+          </button>
+
+          <button class="folder-card disabled-folder" type="button" disabled>
+            <span class="folder-icon">📁</span>
+            <span class="folder-title">Kardiologi</span>
+            <span class="folder-text">Under udvikling</span>
+          </button>
+
+          <button class="folder-card disabled-folder" type="button" disabled>
+            <span class="folder-icon">📁</span>
+            <span class="folder-title">Akutmedicin</span>
+            <span class="folder-text">Under udvikling</span>
+          </button>
+
+          <button class="folder-card disabled-folder" type="button" disabled>
+            <span class="folder-icon">📁</span>
+            <span class="folder-title">Blodprøver</span>
+            <span class="folder-text">Under udvikling</span>
+          </button>
+        </div>
+
+        <footer class="app-footer">
+          <span>© Adam Margoev</span>
+          <span>Medical Education &amp; Training Platform</span>
+        </footer>
+      </section>
+
+      <section class="screen hidden" id="materialsScreen">
+        <div class="intro">
+          <h2>EKG-repetition</h2>
           <p>Vælg en kategori. Spørgsmål og svarmuligheder bliver blandet på ny hver gang, så rækkefølgen ikke kan læres udenad.</p>
         </div>
         <div class="materials-grid" id="materialsGrid"></div>
@@ -60,8 +110,6 @@
           <button class="primary-button" id="nextQuestion" type="button">Næste side</button>
         </nav>
       </section>
-
-      <footer class="app-footer">Dette program er lavet af Adam Margoev.</footer>
     </main>
 
     <script src="questions.js"></script>
