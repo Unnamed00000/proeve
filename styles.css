@@ -21,9 +21,15 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  height: 100%;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
+  overflow: hidden;
   color: var(--text);
   background:
     radial-gradient(circle at center top, rgba(255, 255, 255, 0.85), transparent 58%),
@@ -36,16 +42,22 @@ button {
 }
 
 .app-shell {
+  display: flex;
+  flex-direction: column;
   width: min(1080px, 100%);
+  height: 100vh;
+  height: 100dvh;
   min-height: 100vh;
   margin: 0 auto;
-  padding: 28px 44px 34px;
+  overflow: hidden;
+  padding: 22px 44px 22px;
 }
 
 .topbar {
   position: relative;
+  flex: 0 0 auto;
   display: block;
-  padding: 0 0 18px;
+  padding: 0 0 10px;
   text-align: center;
 }
 
@@ -54,9 +66,9 @@ button {
 }
 
 .eyebrow {
-  margin: 0 0 8px;
+  margin: 0 0 7px;
   color: var(--dark-green);
-  font-size: clamp(2.1rem, 6.2vw, 4.9rem);
+  font-size: clamp(1.68rem, 4.96vw, 3.92rem);
   font-weight: 900;
   line-height: 0.98;
   letter-spacing: 0.055em;
@@ -68,7 +80,7 @@ button {
   max-width: 960px;
   margin: 0 auto;
   color: var(--soft-green);
-  font-size: clamp(1.2rem, 3vw, 2.45rem);
+  font-size: clamp(0.96rem, 2.4vw, 1.96rem);
   font-weight: 900;
   line-height: 1.05;
   letter-spacing: -0.02em;
@@ -77,10 +89,18 @@ button {
 
 .screen {
   display: block;
+  min-height: 0;
 }
 
 .hidden {
   display: none !important;
+}
+
+#homeScreen {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 #homeScreen .intro {
@@ -88,8 +108,13 @@ button {
 }
 
 .folders-grid {
+  flex: 1 1 auto;
   width: min(930px, 100%);
-  margin: 12px auto 0;
+  min-height: 0;
+  margin: 8px auto 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 4px;
 }
 
 .folder-card {
@@ -155,11 +180,12 @@ button {
 }
 
 .app-footer {
+  flex: 0 0 auto;
   display: grid;
-  gap: 5px;
-  margin: 28px auto 0;
+  gap: 4px;
+  margin: 16px auto 0;
   color: var(--red-line);
-  font-size: clamp(0.9rem, 1.75vw, 1.35rem);
+  font-size: clamp(0.72rem, 1.4vw, 1.08rem);
   font-weight: 900;
   line-height: 1.12;
   text-align: center;
@@ -170,14 +196,14 @@ button {
 .icon-button {
   position: absolute;
   left: 0;
-  top: 10px;
-  width: 50px;
-  height: 50px;
+  top: 8px;
+  width: 48px;
+  height: 48px;
   border: 1px solid var(--line);
   border-radius: 50%;
   background: var(--surface);
   color: var(--primary-dark);
-  font-size: 2rem;
+  font-size: 1.95rem;
   line-height: 1;
   cursor: pointer;
   box-shadow: var(--shadow);
@@ -185,8 +211,12 @@ button {
 
 #materialsScreen,
 #quizScreen {
+  flex: 1 1 auto;
   width: min(980px, 100%);
+  min-height: 0;
   margin: 0 auto;
+  overflow-y: auto;
+  padding-bottom: 12px;
 }
 
 .intro {
@@ -430,16 +460,16 @@ button {
 
 @media (max-width: 720px) {
   .app-shell {
-    padding: 20px 18px 24px;
+    padding: 18px 18px 18px;
   }
 
   .eyebrow {
-    font-size: clamp(2rem, 9vw, 3.05rem);
+    font-size: clamp(1.6rem, 7.2vw, 2.44rem);
     letter-spacing: 0.03em;
   }
 
   .topbar h1 {
-    font-size: clamp(1rem, 4.8vw, 1.5rem);
+    font-size: clamp(0.8rem, 3.84vw, 1.2rem);
   }
 
   .folder-card {
@@ -464,7 +494,8 @@ button {
   }
 
   .app-footer {
-    font-size: clamp(0.72rem, 3.2vw, 0.98rem);
+    margin-top: 12px;
+    font-size: clamp(0.58rem, 2.56vw, 0.78rem);
   }
 
   .materials-grid {
