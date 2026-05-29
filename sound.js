@@ -41,7 +41,124 @@ window.medicalTrainingSound = (() => {
     }
   }
 
+  function injectSettingsStyle() {
+    if (document.querySelector('#settingsStyle')) return;
+    const style = document.createElement('style');
+    style.id = 'settingsStyle';
+    style.textContent = `
+      .settings-button {
+        position: absolute;
+        top: 8px;
+        right: 0;
+        z-index: 20;
+        display: grid;
+        place-items: center;
+        width: 48px;
+        height: 48px;
+        border: 1px solid rgba(7, 31, 24, 0.18);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.88);
+        color: #071f18;
+        font-size: 1.45rem;
+        line-height: 1;
+        cursor: pointer;
+        box-shadow: 0 12px 28px rgba(10, 20, 16, 0.12);
+      }
+
+      .settings-button:active {
+        transform: scale(0.96);
+      }
+
+      .settings-panel {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: grid;
+        place-items: center;
+        padding: 22px;
+        background: rgba(7, 31, 24, 0.28);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      }
+
+      .settings-panel.hidden {
+        display: none !important;
+      }
+
+      .settings-card {
+        width: min(360px, 100%);
+        border: 1px solid rgba(255, 255, 255, 0.65);
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.96);
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+        overflow: hidden;
+      }
+
+      .settings-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 18px 14px;
+        border-bottom: 1px solid #d7dfd8;
+        color: #071f18;
+        font-size: 1.2rem;
+      }
+
+      .settings-close {
+        width: 36px;
+        height: 36px;
+        border: 0;
+        border-radius: 50%;
+        background: #eef6f2;
+        color: #071f18;
+        font-size: 1.4rem;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .settings-section {
+        padding: 18px;
+      }
+
+      .settings-section h4 {
+        margin: 0 0 12px;
+        color: #50675f;
+        font-size: 0.9rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .sound-switch {
+        width: 100%;
+        min-height: 52px;
+        border: 0;
+        border-radius: 14px;
+        background: #176b5d;
+        color: #ffffff;
+        font-size: 1rem;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .sound-switch.off {
+        background: #8b0014;
+      }
+
+      @media (max-width: 720px) {
+        .settings-button {
+          width: 42px;
+          height: 42px;
+          top: 4px;
+          right: 0;
+          font-size: 1.25rem;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   function addSettings() {
+    injectSettingsStyle();
     if (document.querySelector('#settingsButton')) return;
     const topbar = document.querySelector('.topbar');
     if (!topbar) return;
@@ -57,7 +174,7 @@ window.medicalTrainingSound = (() => {
     panel.id = 'settingsPanel';
     panel.className = 'settings-panel hidden';
     panel.innerHTML = `
-      <div class="settings-card">
+      <div class="settings-card" role="dialog" aria-modal="true" aria-label="Indstillinger">
         <div class="settings-head">
           <strong>Indstillinger</strong>
           <button type="button" class="settings-close" aria-label="Luk">×</button>
@@ -81,7 +198,7 @@ window.medicalTrainingSound = (() => {
     }
 
     btn.addEventListener('click', () => {
-      panel.classList.toggle('hidden');
+      panel.classList.remove('hidden');
       play('open');
     });
 
