@@ -23,6 +23,24 @@ let currentQuestionIndex = 0;
 let answers = {};
 let shuffledQuestions = [];
 
+function loadExtraQuestions() {
+  return new Promise((resolve) => {
+    if (window.__extraQuestionsLoaded) {
+      resolve();
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = `extra-questions.js?v=${Date.now()}`;
+    script.onload = () => {
+      window.__extraQuestionsLoaded = true;
+      resolve();
+    };
+    script.onerror = () => resolve();
+    document.head.appendChild(script);
+  });
+}
+
 function showScreen(screenName) {
   currentScreen = screenName;
 
@@ -60,6 +78,7 @@ function prepareQuestions(material) {
 
     return {
       text: question.text,
+      image: question.image || "",
       explanation: question.explanation,
       options: shuffleArray(options)
     };
@@ -129,6 +148,19 @@ function renderQuestion() {
   questionCounter.textContent = `Spørgsmål ${currentQuestionIndex + 1} af ${shuffledQuestions.length}`;
   questionText.textContent = question.text;
   answersList.innerHTML = "";
+
+  const oldImage = document.querySelector("#questionImageWrap");
+  if (oldImage) {
+    oldImage.remove();
+  }
+
+  if (question.image) {
+    const imageWrap = document.createElement("div");
+    imageWrap.id = "questionImageWrap";
+    imageWrap.className = "question-image-wrap";
+    imageWrap.innerHTML = `<img src="${question.image}" alt="EKG-billede" class="question-image">`;
+    questionText.insertAdjacentElement("afterend", imageWrap);
+  }
 
   question.options.forEach((option, optionIndex) => {
     const button = document.createElement("button");
@@ -222,5 +254,7 @@ if ("serviceWorker" in navigator) {
   });
 }
 
-renderMaterials();
-showScreen("home");
+loadExtraQuestions().then(() => {
+  renderMaterials();
+  showScreen("home");
+});
