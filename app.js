@@ -17,6 +17,33 @@ const letters = ["A", "B", "C", "D"];
 let currentMaterial = null;
 let currentQuestionIndex = 0;
 let answers = {};
+let shuffledQuestions = [];
+
+function shuffleArray(items) {
+  const shuffled = [...items];
+
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+  }
+
+  return shuffled;
+}
+
+function prepareQuestions(material) {
+  return shuffleArray(material.questions).map((question) => {
+    const options = question.options.map((option, originalIndex) => ({
+      text: option,
+      isCorrect: originalIndex === question.answer
+    }));
+
+    return {
+      text: question.text,
+      explanation: question.explanation,
+      options: shuffleArray(options)
+    };
+  });
+}
 
 function renderMaterials() {
   materialsGrid.innerHTML = "";
@@ -38,7 +65,8 @@ function renderMaterials() {
 function openMaterial(materialId) {
   currentMaterial = QUIZ_MATERIALS.find((material) => material.id === materialId);
   currentQuestionIndex = 0;
-  answers = loadAnswers(materialId);
+  answers = {};
+  shuffledQuestions = prepareQuestions(currentMaterial);
 
   materialsScreen.classList.add("hidden");
   quizScreen.classList.remove("hidden");
@@ -55,13 +83,20 @@ function closeMaterial() {
   screenTitle.textContent = "EKG repetition";
 }
 
+function resetQuiz() {
+  currentQuestionIndex = 0;
+  answers = {};
+  shuffledQuestions = prepareQuestions(currentMaterial);
+  renderQuestion();
+}
+
 function renderQuestion() {
-  const question = currentMaterial.questions[currentQuestionIndex];
+  const question = shuffledQuestions[currentQuestionIndex];
   const selectedAnswer = answers[currentQuestionIndex];
   const isAnswered = selectedAnswer !== undefined;
 
   materialLabel.textContent = currentMaterial.title;
-  questionCounter.textContent = `Spørgsmål ${currentQuestionIndex + 1} af ${currentMaterial.questions.length}`;
+  questionCounter.textContent = `Spørgsmål ${currentQuestionIndex + 1} af ${shuffledQuestions.length}`;
   questionText.textContent = question.text;
   answersList.innerHTML = "";
 
@@ -71,14 +106,14 @@ function renderQuestion() {
     button.type = "button";
     button.innerHTML = `
       <span class="answer-letter">${letters[optionIndex]}</span>
-      <span>${option}</span>
+      <span>${option.text}</span>
     `;
 
-    if (isAnswered && optionIndex === question.answer) {
+    if (isAnswered && option.isCorrect) {
       button.classList.add("correct");
     }
 
-    if (isAnswered && optionIndex === selectedAnswer && selectedAnswer !== question.answer) {
+    if (isAnswered && optionIndex === selectedAnswer && !option.isCorrect) {
       button.classList.add("incorrect");
     }
 
@@ -93,7 +128,6 @@ function renderQuestion() {
 
 function chooseAnswer(optionIndex) {
   answers[currentQuestionIndex] = optionIndex;
-  saveAnswers(currentMaterial.id, answers);
   renderQuestion();
 }
 
@@ -105,48 +139,33 @@ function renderFeedback(question, selectedAnswer) {
     return;
   }
 
-  if (selectedAnswer === question.answer) {
+  const selectedOption = question.options[selectedAnswer];
+  const correctIndex = question.options.findIndex((option) => option.isCorrect);
+
+  if (selectedOption.isCorrect) {
     feedbackText.classList.add("good");
     feedbackText.textContent = `Korrekt. ${question.explanation}`;
     return;
   }
 
   feedbackText.classList.add("bad");
-  feedbackText.textContent = `Ikke korrekt. Det rigtige svar er ${letters[question.answer]}. ${question.explanation}`;
+  feedbackText.textContent = `Ikke korrekt. Det rigtige svar er ${letters[correctIndex]}. ${question.explanation}`;
 }
 
 function renderNavigation() {
   prevQuestion.disabled = currentQuestionIndex === 0;
-  nextQuestion.disabled = currentQuestionIndex === currentMaterial.questions.length - 1;
-  progressFill.style.width = `${((currentQuestionIndex + 1) / currentMaterial.questions.length) * 100}%`;
+  nextQuestion.disabled = currentQuestionIndex === shuffledQuestions.length - 1;
+  progressFill.style.width = `${((currentQuestionIndex + 1) / shuffledQuestions.length) * 100}%`;
 }
 
 function renderScore() {
   const answeredIndexes = Object.keys(answers);
   const correctCount = answeredIndexes.filter((index) => {
-    const question = currentMaterial.questions[Number(index)];
-    return answers[index] === question.answer;
+    const question = shuffledQuestions[Number(index)];
+    return question.options[answers[index]].isCorrect;
   }).length;
 
-  scorePill.textContent = `${correctCount} / ${currentMaterial.questions.length}`;
-}
-
-function saveAnswers(materialId, materialAnswers) {
-  localStorage.setItem(`quiz-answers-${materialId}`, JSON.stringify(materialAnswers));
-}
-
-function loadAnswers(materialId) {
-  const saved = localStorage.getItem(`quiz-answers-${materialId}`);
-
-  if (!saved) {
-    return {};
-  }
-
-  try {
-    return JSON.parse(saved);
-  } catch {
-    return {};
-  }
+  scorePill.textContent = `${correctCount} / ${shuffledQuestions.length}`;
 }
 
 prevQuestion.addEventListener("click", () => {
@@ -157,13 +176,19 @@ prevQuestion.addEventListener("click", () => {
 });
 
 nextQuestion.addEventListener("click", () => {
-  if (currentQuestionIndex < currentMaterial.questions.length - 1) {
+  if (currentQuestionIndex < shuffledQuestions.length - 1) {
     currentQuestionIndex += 1;
     renderQuestion();
   }
 });
 
 backToMaterials.addEventListener("click", closeMaterial);
+
+document.addEventListener("click", (event) => {
+  if (event.target && event.target.id === "resetQuiz") {
+    resetQuiz();
+  }
+});
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
