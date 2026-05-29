@@ -1,0 +1,17 @@
+{
+  "name": "EKG repetition",
+  "short_name": "EKG Quiz",
+  "description": "Quiz til repetition af EKG-stof.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f4f1ea",
+  "theme_color": "#176b5d",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
