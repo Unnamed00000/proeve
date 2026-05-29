@@ -1,0 +1,1 @@
+const ECG_IMAGE_DATA = {};
