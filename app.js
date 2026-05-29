@@ -1,7 +1,9 @@
+const homeScreen = document.querySelector("#homeScreen");
 const materialsGrid = document.querySelector("#materialsGrid");
 const materialsScreen = document.querySelector("#materialsScreen");
 const quizScreen = document.querySelector("#quizScreen");
 const backToMaterials = document.querySelector("#backToMaterials");
+const openEkgFolder = document.querySelector("#openEkgFolder");
 const screenTitle = document.querySelector("#screenTitle");
 const materialLabel = document.querySelector("#materialLabel");
 const questionCounter = document.querySelector("#questionCounter");
@@ -15,10 +17,28 @@ const nextQuestion = document.querySelector("#nextQuestion");
 const resetQuizButton = document.querySelector("#resetQuiz");
 
 const letters = ["A", "B", "C", "D"];
+let currentScreen = "home";
 let currentMaterial = null;
 let currentQuestionIndex = 0;
 let answers = {};
 let shuffledQuestions = [];
+
+function showScreen(screenName) {
+  currentScreen = screenName;
+
+  homeScreen.classList.toggle("hidden", screenName !== "home");
+  materialsScreen.classList.toggle("hidden", screenName !== "materials");
+  quizScreen.classList.toggle("hidden", screenName !== "quiz");
+  backToMaterials.classList.toggle("hidden", screenName === "home");
+
+  if (screenName === "home") {
+    screenTitle.textContent = "Medicinsk Uddannelsesplatform";
+  }
+
+  if (screenName === "materials") {
+    screenTitle.textContent = "EKG-repetition";
+  }
+}
 
 function shuffleArray(items) {
   const shuffled = [...items];
@@ -63,28 +83,37 @@ function renderMaterials() {
   });
 }
 
+function openEkgMaterials() {
+  showScreen("materials");
+}
+
 function openMaterial(materialId) {
   currentMaterial = QUIZ_MATERIALS.find((material) => material.id === materialId);
   currentQuestionIndex = 0;
   answers = {};
   shuffledQuestions = prepareQuestions(currentMaterial);
 
-  materialsScreen.classList.add("hidden");
-  quizScreen.classList.remove("hidden");
-  backToMaterials.classList.remove("hidden");
+  showScreen("quiz");
   screenTitle.textContent = currentMaterial.title;
-
   renderQuestion();
 }
 
-function closeMaterial() {
-  quizScreen.classList.add("hidden");
-  materialsScreen.classList.remove("hidden");
-  backToMaterials.classList.add("hidden");
-  screenTitle.textContent = "EKG repetition";
+function goBack() {
+  if (currentScreen === "quiz") {
+    showScreen("materials");
+    return;
+  }
+
+  if (currentScreen === "materials") {
+    showScreen("home");
+  }
 }
 
 function resetQuiz() {
+  if (!currentMaterial) {
+    return;
+  }
+
   currentQuestionIndex = 0;
   answers = {};
   shuffledQuestions = prepareQuestions(currentMaterial);
@@ -183,13 +212,15 @@ nextQuestion.addEventListener("click", () => {
   }
 });
 
-backToMaterials.addEventListener("click", closeMaterial);
+openEkgFolder.addEventListener("click", openEkgMaterials);
+backToMaterials.addEventListener("click", goBack);
 resetQuizButton.addEventListener("click", resetQuiz);
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.getRegistrations().then((registrations) => {
-    registrations.forEach((registration) => registration.unregister());
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js");
   });
 }
 
 renderMaterials();
+showScreen("home");
