@@ -1,12 +1,14 @@
-const CACHE_NAME = "study-quiz-v5";
+const CACHE_NAME = "medical-training-v1.1.0";
 const ASSETS = [
-  "./",
-  "index.html",
-  "styles.css",
-  "questions.js",
-  "app.js",
-  "manifest.webmanifest",
-  "icons/icon.svg"
+  "./?v=1.1.0",
+  "index.html?v=1.1.0",
+  "styles.css?v=1.1.0",
+  "questions.js?v=1.1.0",
+  "app.js?v=1.1.0",
+  "extra-questions.js?v=1.1.0",
+  "sound.js?v=1.1.0",
+  "manifest.webmanifest?v=1.1.0",
+  "icons/icon.svg?v=1.1.0"
 ];
 
 self.addEventListener("install", (event) => {
@@ -25,10 +27,7 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET") {
-    return;
-  }
-
+  if (event.request.method !== "GET") return;
   event.respondWith(
     fetch(event.request)
       .then((response) => {
