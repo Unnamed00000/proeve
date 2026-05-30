@@ -1,8 +1,47 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="108" fill="#176b5d"/>
-  <path d="M145 132h172c34 0 62 28 62 62v186H178c-42 0-76-34-76-76V175c0-24 19-43 43-43Z" fill="#f4f1ea"/>
-  <path d="M177 166h154c13 0 24 11 24 24v152H183c-30 0-54-24-54-54V214c0-27 21-48 48-48Z" fill="#ffffff"/>
-  <path d="M181 222h126M181 270h126M181 318h86" stroke="#176b5d" stroke-width="24" stroke-linecap="round"/>
-  <circle cx="354" cy="357" r="74" fill="#c85a31"/>
-  <path d="m322 355 23 23 44-50" fill="none" stroke="#ffffff" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#000000" flood-opacity="0.22"/>
+    </filter>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="steel" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.35" stop-color="#bfc4c7"/>
+      <stop offset="0.7" stop-color="#2e3336"/>
+      <stop offset="1" stop-color="#f7f7f7"/>
+    </linearGradient>
+    <radialGradient id="disc" cx="40%" cy="35%" r="70%">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.45" stop-color="#d6d9da"/>
+      <stop offset="0.8" stop-color="#777c80"/>
+      <stop offset="1" stop-color="#232629"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="512" height="512" rx="112" fill="#ffffff"/>
+  <rect x="9" y="9" width="494" height="494" rx="104" fill="none" stroke="#e4e7e7" stroke-width="8"/>
+
+  <path d="M38 257 H74 L91 211 L118 323 L143 181 L169 257 H202 L222 229 L242 257 H285 L304 214 L330 302 L352 257 H474" fill="none" stroke="#e11923" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+
+  <g filter="url(#shadow)">
+    <path d="M164 75 C143 77 127 96 130 118 L148 247 C154 294 190 330 237 330 C284 330 320 294 326 247 L344 118 C347 96 331 77 310 75" fill="none" stroke="#111314" stroke-width="27" stroke-linecap="round"/>
+    <path d="M164 75 C143 77 127 96 130 118 L148 247 C154 294 190 330 237 330 C284 330 320 294 326 247 L344 118 C347 96 331 77 310 75" fill="none" stroke="url(#steel)" stroke-width="15" stroke-linecap="round"/>
+
+    <rect x="137" y="55" width="58" height="37" rx="18" fill="url(#steel)" transform="rotate(-11 166 73)"/>
+    <rect x="281" y="55" width="58" height="37" rx="18" fill="url(#steel)" transform="rotate(11 310 73)"/>
+
+    <path d="M237 330 C237 374 268 401 307 403 C335 405 356 421 356 450" fill="none" stroke="#121416" stroke-width="24" stroke-linecap="round"/>
+    <path d="M237 330 C237 374 268 401 307 403 C335 405 356 421 356 450" fill="none" stroke="url(#steel)" stroke-width="12" stroke-linecap="round"/>
+
+    <circle cx="356" cy="415" r="64" fill="url(#disc)"/>
+    <circle cx="356" cy="415" r="47" fill="none" stroke="#f7f7f7" stroke-width="8" opacity="0.9"/>
+    <circle cx="356" cy="415" r="17" fill="#151719" stroke="#f7f7f7" stroke-width="5"/>
+    <circle cx="376" cy="395" r="9" fill="#ffffff" opacity="0.65"/>
+  </g>
 </svg>
