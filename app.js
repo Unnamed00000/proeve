@@ -23,6 +23,7 @@ let currentQuestionIndex = 0;
 let answers = {};
 let shuffledQuestions = [];
 let resultIsShown = false;
+let resultRecorded = false;
 
 function playSound(name) {
   if (window.medicalTrainingSound) {
@@ -118,6 +119,7 @@ function openMaterial(materialId) {
   currentMaterial = QUIZ_MATERIALS.find((material) => material.id === materialId);
   currentQuestionIndex = 0;
   answers = {};
+  resultRecorded = false;
   shuffledQuestions = prepareQuestions(currentMaterial);
 
   showScreen("quiz");
@@ -140,6 +142,7 @@ function resetQuiz() {
   currentQuestionIndex = 0;
   answers = {};
   resultIsShown = false;
+  resultRecorded = false;
   shuffledQuestions = prepareQuestions(currentMaterial);
   renderQuestion();
 }
@@ -159,8 +162,13 @@ function getScoreData() {
 }
 
 function renderResult() {
+  if (resultIsShown) return;
   resultIsShown = true;
   const result = getScoreData();
+  if (!resultRecorded && window.medicalTrainingSound?.recordResult) {
+    window.medicalTrainingSound.recordResult(result);
+    resultRecorded = true;
+  }
   playSound("finish");
 
   const wrongQuestions = shuffledQuestions.filter((question, index) => {
