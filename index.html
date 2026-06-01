@@ -3,94 +3,43 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#176b5d">
+    <meta name="theme-color" content="#0f7f95">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Medical Training">
-    <title>Medical Training</title>
-    <link rel="manifest" href="manifest.webmanifest?v=1.0.4">
-    <link rel="apple-touch-icon" href="icons/icon.svg?v=1.0.4">
-    <link rel="icon" href="icons/icon.svg?v=1.0.4" type="image/svg+xml">
-    <link rel="stylesheet" href="styles.css?v=1.0.4">
+    <meta name="apple-mobile-web-app-title" content="EKG Quiz">
+    <title>EKG repetition</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="icons/icon.svg">
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <main class="app-shell">
       <header class="topbar">
-        <button class="icon-button hidden" id="backToMaterials" type="button" aria-label="Tilbage">
-          <span aria-hidden="true">‹</span>
+        <button class="icon-button hidden" id="backButton" type="button" aria-label="Tilbage">
+          <span aria-hidden="true">&lsaquo;</span>
         </button>
-        <div>
-          <p class="eyebrow">Medical Training</p>
-          <h1 id="screenTitle">Medicinsk Uddannelsesplatform</h1>
+        <div class="title-block">
+          <p class="eyebrow" id="appEyebrow">Personlig træning</p>
+          <h1 id="screenTitle">EKG repetition</h1>
         </div>
+        <button class="icon-button settings-button" id="settingsButton" type="button" aria-label="Indstillinger">
+          <span aria-hidden="true">⚙</span>
+        </button>
       </header>
 
-      <section class="screen" id="homeScreen">
+      <section class="screen" id="foldersScreen">
         <div class="intro">
-          <h2>Vælg et område</h2>
-          <p>Start med EKG-repetition. Flere medicinske områder bliver tilføjet senere.</p>
+          <h2 id="foldersHeading">Mapper</h2>
+          <p id="foldersIntro">Vælg en mappe for at åbne emnerne.</p>
         </div>
-
-        <div class="folders-grid">
-          <button class="folder-card active-folder" id="openEkgFolder" type="button">
-            <span class="folder-icon">📁</span>
-            <span>
-              <span class="folder-title">EKG-repetition</span>
-              <span class="folder-text">Repetér EKG, AV-blokke og WPW.</span>
-            </span>
-          </button>
-
-          <button class="folder-card disabled-folder" type="button" disabled>
-            <span class="folder-icon">📁</span>
-            <span>
-              <span class="folder-title">Farmakologi</span>
-              <span class="folder-text">Under udvikling</span>
-            </span>
-          </button>
-
-          <button class="folder-card disabled-folder" type="button" disabled>
-            <span class="folder-icon">📁</span>
-            <span>
-              <span class="folder-title">Anatomi</span>
-              <span class="folder-text">Under udvikling</span>
-            </span>
-          </button>
-
-          <button class="folder-card disabled-folder" type="button" disabled>
-            <span class="folder-icon">📁</span>
-            <span>
-              <span class="folder-title">Kardiologi</span>
-              <span class="folder-text">Under udvikling</span>
-            </span>
-          </button>
-
-          <button class="folder-card disabled-folder" type="button" disabled>
-            <span class="folder-icon">📁</span>
-            <span>
-              <span class="folder-title">Akutmedicin</span>
-              <span class="folder-text">Under udvikling</span>
-            </span>
-          </button>
-
-          <button class="folder-card disabled-folder" type="button" disabled>
-            <span class="folder-icon">📁</span>
-            <span>
-              <span class="folder-title">Blodprøver</span>
-              <span class="folder-text">Under udvikling</span>
-            </span>
-          </button>
-        </div>
-
-        <footer class="app-footer">
-          <span>© ADAM MARGOEV</span>
-          <span>MEDICAL EDUCATION &amp; TRAINING PLATFORM</span>
-        </footer>
+        <div class="materials-grid" id="foldersGrid"></div>
       </section>
 
       <section class="screen hidden" id="materialsScreen">
         <div class="intro">
-          <h2>EKG-repetition</h2>
-          <p>Vælg en kategori. Spørgsmål og svarmuligheder bliver blandet på ny hver gang, så rækkefølgen ikke kan læres udenad.</p>
+          <h2 id="materialsHeading">Emner</h2>
+          <p id="materialsIntro">Vælg et emne for at starte en ny repetition.</p>
         </div>
         <div class="materials-grid" id="materialsGrid"></div>
       </section>
@@ -101,10 +50,7 @@
             <p class="eyebrow" id="materialLabel">Emne</p>
             <h2 id="questionCounter">Spørgsmål 1</h2>
           </div>
-          <div class="quiz-actions">
-            <button class="secondary-button reset-button" id="resetQuiz" type="button">Nulstil</button>
-            <div class="score-pill" id="scorePill">0 / 0</div>
-          </div>
+          <div class="score-pill" id="scorePill">0 / 0</div>
         </div>
 
         <div class="progress-track" aria-hidden="true">
@@ -122,9 +68,50 @@
           <button class="primary-button" id="nextQuestion" type="button">Næste side</button>
         </nav>
       </section>
+
+      <footer class="app-footer">
+        <span id="authorText">Programmet er lavet af Adam Margoev</span>
+      </footer>
     </main>
 
-    <script src="questions.js?v=1.0.4"></script>
-    <script src="app.js?v=1.0.4"></script>
+    <div class="modal-backdrop hidden" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <section class="settings-panel">
+        <div class="settings-header">
+          <div>
+            <p class="eyebrow" id="settingsEyebrow">Kontrolpanel</p>
+            <h2 id="settingsTitle">Indstillinger</h2>
+          </div>
+          <button class="icon-button" id="closeSettings" type="button" aria-label="Luk">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+
+        <div class="setting-row">
+          <div>
+            <h3 id="themeTitle">Tema</h3>
+            <p id="themeDescription">Skift mellem lys og mørk visning.</p>
+          </div>
+          <label class="theme-switch" id="themeSwitchLabel">
+            <input id="themeToggle" type="checkbox">
+            <span class="switch-track">
+              <span class="switch-thumb"></span>
+            </span>
+          </label>
+        </div>
+
+        <div class="setting-block">
+          <div>
+            <h3 id="languageTitle">Sprog</h3>
+            <p id="languageDescription">Vælg appens sprog.</p>
+          </div>
+          <div class="language-grid" id="languageGrid"></div>
+        </div>
+
+        <button class="danger-button" id="resetButton" type="button">Nulstil</button>
+      </section>
+    </div>
+
+    <script src="questions.js"></script>
+    <script src="app.js"></script>
   </body>
 </html>

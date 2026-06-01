@@ -1,18 +1,15 @@
-const CACHE_NAME = "medical-training-v1.1.0";
+const CACHE_NAME = "study-quiz-v3";
 const ASSETS = [
-  "./?v=1.1.0",
-  "index.html?v=1.1.0",
-  "styles.css?v=1.1.0",
-  "questions.js?v=1.1.0",
-  "app.js?v=1.1.0",
-  "extra-questions.js?v=1.1.0",
-  "sound.js?v=1.1.0",
-  "manifest.webmanifest?v=1.1.0",
-  "icons/icon.svg?v=1.1.0"
+  "./",
+  "index.html",
+  "styles.css",
+  "questions.js",
+  "app.js",
+  "manifest.webmanifest",
+  "icons/icon.svg"
 ];
 
 self.addEventListener("install", (event) => {
-  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
   );
@@ -20,21 +17,14 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(keys.map((key) => caches.delete(key))))
-      .then(() => self.clients.claim())
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))
+    )
   );
 });
 
 self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET") return;
   event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        const responseCopy = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseCopy));
-        return response;
-      })
-      .catch(() => caches.match(event.request))
+    caches.match(event.request).then((cached) => cached || fetch(event.request))
   );
 });

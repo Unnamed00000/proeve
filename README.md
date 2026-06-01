@@ -1,43 +1,38 @@
 # EKG repetition
 
-Dette er en lille quiz-app til repetition af EKG-stof fra `ECG.docx`.
+Quiz-app til repetition af EKG-stof.
 
 ## Funktioner
 
-- valg af emne;
-- spørgsmål med svarmulighederne A, B, C og D;
-- knapperne `Forrige side` og `Næste side`;
-- forklaring efter hvert valgt svar;
-- gemte svar i browseren;
-- mobilvenligt layout;
-- PWA-filer, så appen kan tilføjes til hjemmeskærmen efter publicering via HTTPS, for eksempel GitHub Pages.
+- startsiden viser mapper;
+- mappen `EKG repetition` indeholder tre emner;
+- hvert emne starter en ny repetition med tilfældig rækkefølge på spørgsmål;
+- svarmulighederne A, B, C og D blandes ved hver ny repetition;
+- valgte svar gemmes ikke efter lukning;
+- knappen `Nulstil` rydder gamle gemte quiz-svar og starter den aktuelle repetition forfra;
+- lys og mørk tema gemmes efter lukning;
+- sprog gemmes efter lukning;
+- interface og quizindhold findes på dansk, russisk og georgisk;
+- layoutet er mobilvenligt og kan publiceres som PWA via GitHub Pages.
 
-## Sådan redigeres spørgsmål
+## Redigering af spørgsmål
 
-Åbn `questions.js`.
+Spørgsmålene ligger i `questions.js`.
 
-Et spørgsmål ser sådan ud:
+Strukturen er:
 
-```js
-{
-  text: "Hvad måler PR-intervallet på et EKG?",
-  options: [
-    "Tiden fra start af P-takken til start af QRS-komplekset",
-    "Tiden fra start af QRS til slutningen af T-takken",
-    "Højden af R-takken i millimeter",
-    "Afstanden mellem to T-takker"
-  ],
-  answer: 0,
-  explanation: "PR-intervallet beskriver ledningstiden fra atriernes depolarisering starter i P-takken, til ventriklernes depolarisering starter i QRS-komplekset."
-}
-```
+- `QUIZ_FOLDERS` = mapper;
+- `materials` = emner inde i en mappe;
+- `questions` = spørgsmål inde i et emne.
 
-I `answer` bruges disse tal:
+Svarnummeret i `answer` bruger denne rækkefølge:
 
 - `0` = A;
 - `1` = B;
 - `2` = C;
 - `3` = D.
+
+Appen blander selv svarmulighederne, så `answer` skal altid pege på den rigtige mulighed i den oprindelige liste.
 
 ## GitHub Pages
 
