@@ -15,6 +15,8 @@ Quiz-app til repetition af EKG-stof.
 - appen viser versionsnummer;
 - appen viser besked, når en ny version er klar;
 - indstillingerne har en knap til tvungen opdatering;
+- indstillingerne har lyd og vibration med gemte valg;
+- sprog vælges i et separat vindue fra indstillingerne;
 - interface og quizindhold findes på dansk, russisk og georgisk;
 - layoutet er mobilvenligt og kan publiceres som PWA via GitHub Pages.
 

@@ -552,6 +552,27 @@ button {
   gap: 10px;
 }
 
+.select-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg-soft);
+  color: var(--text);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.select-button span:last-child {
+  color: var(--primary-strong);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
 .language-option {
   min-height: 48px;
   border: 1px solid var(--line);
@@ -569,8 +590,14 @@ button {
 }
 
 .language-option:hover,
-.language-option:focus-visible {
+.language-option:focus-visible,
+.select-button:hover,
+.select-button:focus-visible {
   outline: 3px solid var(--focus);
+}
+
+.language-panel {
+  width: min(460px, 100%);
 }
 
 .update-toast {

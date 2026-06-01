@@ -8,7 +8,13 @@ const settingsButton = document.querySelector("#settingsButton");
 const settingsModal = document.querySelector("#settingsModal");
 const closeSettings = document.querySelector("#closeSettings");
 const themeToggle = document.querySelector("#themeToggle");
+const openLanguageModal = document.querySelector("#openLanguageModal");
+const currentLanguageLabel = document.querySelector("#currentLanguageLabel");
+const languageModal = document.querySelector("#languageModal");
+const closeLanguageModal = document.querySelector("#closeLanguageModal");
 const languageGrid = document.querySelector("#languageGrid");
+const soundToggle = document.querySelector("#soundToggle");
+const vibrationToggle = document.querySelector("#vibrationToggle");
 const resetButton = document.querySelector("#resetButton");
 const screenTitle = document.querySelector("#screenTitle");
 const appEyebrow = document.querySelector("#appEyebrow");
@@ -39,15 +45,22 @@ const themeTitle = document.querySelector("#themeTitle");
 const themeDescription = document.querySelector("#themeDescription");
 const languageTitle = document.querySelector("#languageTitle");
 const languageDescription = document.querySelector("#languageDescription");
+const languageModalEyebrow = document.querySelector("#languageModalEyebrow");
+const languageModalTitle = document.querySelector("#languageModalTitle");
+const soundTitle = document.querySelector("#soundTitle");
+const soundDescription = document.querySelector("#soundDescription");
+const vibrationTitle = document.querySelector("#vibrationTitle");
+const vibrationDescription = document.querySelector("#vibrationDescription");
 const updateTitle = document.querySelector("#updateTitle");
 const updateDescription = document.querySelector("#updateDescription");
 const forceUpdateButton = document.querySelector("#forceUpdateButton");
 
 const APP_NAME = "EKG repetition";
-const APP_VERSION = "v1.2.0";
+const APP_VERSION = "v1.3.0";
 const AUTHOR_NAME = "Adam Margoev";
 const letters = ["A", "B", "C", "D"];
 let waitingServiceWorker = null;
+let audioContext = null;
 
 const I18N = {
   da: {
@@ -63,6 +76,11 @@ const I18N = {
     themeDescription: "Skift mellem lys og mørk visning.",
     language: "Sprog",
     languageDescription: "Vælg appens sprog.",
+    chooseLanguage: "Vælg sprog",
+    sound: "Lyd",
+    soundDescription: "Afspil korte lyde ved svar og navigation.",
+    vibration: "Vibration",
+    vibrationDescription: "Brug let vibration ved svar på telefonen.",
     update: "Opdatering",
     updateDescription: "Tjek og hent den nyeste version af appen.",
     forceUpdate: "Tving opdatering",
@@ -102,6 +120,11 @@ const I18N = {
     themeDescription: "Переключение между светлым и тёмным режимом.",
     language: "Язык",
     languageDescription: "Выберите язык приложения.",
+    chooseLanguage: "Выберите язык",
+    sound: "Звук",
+    soundDescription: "Воспроизводить короткие звуки при ответах и навигации.",
+    vibration: "Вибрация",
+    vibrationDescription: "Использовать лёгкую вибрацию при ответах на телефоне.",
     update: "Обновление",
     updateDescription: "Проверить и загрузить последнюю версию приложения.",
     forceUpdate: "Форс-обновление",
@@ -141,6 +164,11 @@ const I18N = {
     themeDescription: "გადართვა ღია და მუქ რეჟიმს შორის.",
     language: "ენა",
     languageDescription: "აირჩიეთ აპლიკაციის ენა.",
+    chooseLanguage: "აირჩიეთ ენა",
+    sound: "ხმა",
+    soundDescription: "მოკლე ხმების დაკვრა პასუხებისა და ნავიგაციის დროს.",
+    vibration: "ვიბრაცია",
+    vibrationDescription: "ტელეფონზე პასუხების დროს მსუბუქი ვიბრაციის გამოყენება.",
     update: "განახლება",
     updateDescription: "შეამოწმეთ და ჩამოტვირთეთ აპის უახლესი ვერსია.",
     forceUpdate: "იძულებითი განახლება",
@@ -172,6 +200,8 @@ const I18N = {
 const state = {
   language: localStorage.getItem("app-language") || "da",
   theme: localStorage.getItem("app-theme") || "light",
+  sound: localStorage.getItem("app-sound") !== "off",
+  vibration: localStorage.getItem("app-vibration") !== "off",
   currentView: "folders",
   currentFolder: null,
   currentMaterial: null,
@@ -220,6 +250,15 @@ function applyTheme() {
   themeToggle.checked = state.theme === "dark";
 }
 
+function applyInteractionSettings() {
+  soundToggle.checked = state.sound;
+  vibrationToggle.checked = state.vibration;
+}
+
+function updateCurrentLanguageLabel() {
+  currentLanguageLabel.textContent = I18N[state.language].languages[state.language];
+}
+
 function applyLanguage() {
   document.documentElement.lang = I18N[state.language].locale;
   appEyebrow.textContent = t("appEyebrow");
@@ -233,6 +272,12 @@ function applyLanguage() {
   themeDescription.textContent = t("themeDescription");
   languageTitle.textContent = t("language");
   languageDescription.textContent = t("languageDescription");
+  languageModalEyebrow.textContent = t("language");
+  languageModalTitle.textContent = t("chooseLanguage");
+  soundTitle.textContent = t("sound");
+  soundDescription.textContent = t("soundDescription");
+  vibrationTitle.textContent = t("vibration");
+  vibrationDescription.textContent = t("vibrationDescription");
   updateTitle.textContent = t("update");
   updateDescription.textContent = t("updateDescription");
   forceUpdateButton.textContent = t("forceUpdate");
@@ -246,8 +291,10 @@ function applyLanguage() {
   backButton.setAttribute("aria-label", t("back"));
   settingsButton.setAttribute("aria-label", t("settings"));
   closeSettings.setAttribute("aria-label", t("close"));
+  closeLanguageModal.setAttribute("aria-label", t("close"));
   authorText.textContent = t("author");
   versionText.textContent = APP_VERSION;
+  updateCurrentLanguageLabel();
   renderLanguageOptions();
   renderCurrentView();
 }
@@ -265,6 +312,7 @@ function renderLanguageOptions() {
       state.language = language;
       localStorage.setItem("app-language", language);
       applyLanguage();
+      languageModal.classList.add("hidden");
     });
     languageGrid.appendChild(button);
   });
@@ -344,6 +392,7 @@ function showMaterials() {
 }
 
 function openMaterial(materialId) {
+  feedbackEffect("tap");
   state.currentMaterial = state.currentFolder.materials.find((material) => material.id === materialId);
   state.currentQuestionIndex = 0;
   state.answers = {};
@@ -416,6 +465,8 @@ function renderQuestion() {
 }
 
 function chooseAnswer(optionIndex) {
+  const question = state.sessionQuestions[state.currentQuestionIndex];
+  feedbackEffect(optionIndex === question.displayAnswer ? "correct" : "incorrect");
   state.answers[state.currentQuestionIndex] = optionIndex;
   renderQuestion();
 }
@@ -454,7 +505,53 @@ function renderScore() {
   scorePill.textContent = `${correctCount} / ${state.sessionQuestions.length}`;
 }
 
+function playTone(type) {
+  if (!state.sound) {
+    return;
+  }
+
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+
+  if (!AudioContext) {
+    return;
+  }
+
+  if (!audioContext) {
+    audioContext = new AudioContext();
+  }
+
+  const oscillator = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+  const now = audioContext.currentTime;
+  const frequency = type === "correct" ? 740 : type === "incorrect" ? 220 : 440;
+
+  oscillator.type = "sine";
+  oscillator.frequency.setValueAtTime(frequency, now);
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(0.08, now + 0.015);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+  oscillator.connect(gain);
+  gain.connect(audioContext.destination);
+  oscillator.start(now);
+  oscillator.stop(now + 0.18);
+}
+
+function vibrateDevice(type) {
+  if (!state.vibration || !("vibrate" in navigator)) {
+    return;
+  }
+
+  const pattern = type === "correct" ? [35] : type === "incorrect" ? [80, 35, 80] : [20];
+  navigator.vibrate(pattern);
+}
+
+function feedbackEffect(type) {
+  playTone(type);
+  vibrateDevice(type);
+}
+
 function resetProgress() {
+  feedbackEffect("tap");
   Object.keys(localStorage)
     .filter((key) => key.startsWith("quiz-answers-"))
     .forEach((key) => localStorage.removeItem(key));
@@ -611,6 +708,7 @@ function registerServiceWorker() {
 
 prevQuestion.addEventListener("click", () => {
   if (state.currentQuestionIndex > 0) {
+    feedbackEffect("tap");
     state.currentQuestionIndex -= 1;
     renderQuestion();
   }
@@ -618,12 +716,14 @@ prevQuestion.addEventListener("click", () => {
 
 nextQuestion.addEventListener("click", () => {
   if (state.currentQuestionIndex < state.sessionQuestions.length - 1) {
+    feedbackEffect("tap");
     state.currentQuestionIndex += 1;
     renderQuestion();
   }
 });
 
 backButton.addEventListener("click", () => {
+  feedbackEffect("tap");
   if (state.currentView === "quiz") {
     showMaterials();
     return;
@@ -633,10 +733,12 @@ backButton.addEventListener("click", () => {
 });
 
 settingsButton.addEventListener("click", () => {
+  feedbackEffect("tap");
   settingsModal.classList.remove("hidden");
 });
 
 closeSettings.addEventListener("click", () => {
+  feedbackEffect("tap");
   settingsModal.classList.add("hidden");
 });
 
@@ -647,9 +749,40 @@ settingsModal.addEventListener("click", (event) => {
 });
 
 themeToggle.addEventListener("change", () => {
+  feedbackEffect("tap");
   state.theme = themeToggle.checked ? "dark" : "light";
   localStorage.setItem("app-theme", state.theme);
   applyTheme();
+});
+
+soundToggle.addEventListener("change", () => {
+  state.sound = soundToggle.checked;
+  localStorage.setItem("app-sound", state.sound ? "on" : "off");
+  if (state.sound) {
+    playTone("tap");
+  }
+});
+
+vibrationToggle.addEventListener("change", () => {
+  state.vibration = vibrationToggle.checked;
+  localStorage.setItem("app-vibration", state.vibration ? "on" : "off");
+  vibrateDevice("tap");
+});
+
+openLanguageModal.addEventListener("click", () => {
+  feedbackEffect("tap");
+  languageModal.classList.remove("hidden");
+});
+
+closeLanguageModal.addEventListener("click", () => {
+  feedbackEffect("tap");
+  languageModal.classList.add("hidden");
+});
+
+languageModal.addEventListener("click", (event) => {
+  if (event.target === languageModal) {
+    languageModal.classList.add("hidden");
+  }
 });
 
 resetButton.addEventListener("click", resetProgress);
@@ -660,5 +793,6 @@ dismissUpdateButton.addEventListener("click", () => {
 });
 
 applyTheme();
+applyInteractionSettings();
 applyLanguage();
 registerServiceWorker();
