@@ -62,7 +62,7 @@ const settingsDeveloperLabel = document.querySelector("#settingsDeveloperLabel")
 const settingsDeveloperValue = document.querySelector("#settingsDeveloperValue");
 
 const APP_NAME = "EKG repetition";
-const APP_VERSION = "v1.4.0";
+const APP_VERSION = "v1.5.0";
 const AUTHOR_NAME = "Adam Margoev";
 const letters = ["A", "B", "C", "D"];
 let waitingServiceWorker = null;
@@ -95,6 +95,8 @@ const I18N = {
     updateReadyText: "Tryk opdater for at bruge den nyeste version.",
     updatedToLatest: "Appen er opdateret til nyeste version.",
     noUpdateFound: "Du har allerede den nyeste version.",
+    vibrationUnsupported: "Vibration understøttes ikke af denne browser.",
+    soundReady: "Lyd er slået til.",
     updateNow: "Opdater",
     later: "Senere",
     reset: "Nulstil",
@@ -142,6 +144,8 @@ const I18N = {
     updateReadyText: "Нажмите обновить, чтобы использовать новую версию.",
     updatedToLatest: "Приложение обновлено до последней версии.",
     noUpdateFound: "У вас уже последняя версия.",
+    vibrationUnsupported: "Этот браузер не поддерживает вибрацию.",
+    soundReady: "Звук включён.",
     updateNow: "Обновить",
     later: "Позже",
     reset: "Сбросить",
@@ -189,6 +193,8 @@ const I18N = {
     updateReadyText: "დააჭირეთ განახლებას უახლესი ვერსიის გამოსაყენებლად.",
     updatedToLatest: "აპი განახლდა უახლეს ვერსიამდე.",
     noUpdateFound: "თქვენ უკვე გაქვთ უახლესი ვერსია.",
+    vibrationUnsupported: "ამ ბრაუზერს ვიბრაციის მხარდაჭერა არ აქვს.",
+    soundReady: "ხმა ჩართულია.",
     updateNow: "განახლება",
     later: "მოგვიანებით",
     reset: "განულება",
@@ -328,8 +334,13 @@ function renderLanguageOptions() {
     button.className = "language-option";
     button.type = "button";
     button.dataset.active = language === state.language;
-    button.textContent = I18N[state.language].languages[language];
+    button.innerHTML = `
+      <span class="language-option-code">${language.toUpperCase()}</span>
+      <span>${I18N[state.language].languages[language]}</span>
+      <span class="language-check" aria-hidden="true">✓</span>
+    `;
     button.addEventListener("click", () => {
+      feedbackEffect("tap");
       state.language = language;
       localStorage.setItem("app-language", language);
       applyLanguage();
@@ -526,24 +537,48 @@ function renderScore() {
   scorePill.textContent = `${correctCount} / ${state.sessionQuestions.length}`;
 }
 
-function playTone(type) {
-  if (!state.sound) {
-    return;
-  }
-
+function getAudioContext() {
   const AudioContext = window.AudioContext || window.webkitAudioContext;
 
   if (!AudioContext) {
-    return;
+    return null;
   }
 
   if (!audioContext) {
     audioContext = new AudioContext();
   }
 
-  const oscillator = audioContext.createOscillator();
-  const gain = audioContext.createGain();
-  const now = audioContext.currentTime;
+  return audioContext;
+}
+
+async function unlockAudio() {
+  const context = getAudioContext();
+
+  if (!context) {
+    return null;
+  }
+
+  if (context.state === "suspended") {
+    await context.resume();
+  }
+
+  return context;
+}
+
+async function playTone(type) {
+  if (!state.sound) {
+    return;
+  }
+
+  const context = await unlockAudio();
+
+  if (!context) {
+    return;
+  }
+
+  const oscillator = context.createOscillator();
+  const gain = context.createGain();
+  const now = context.currentTime;
   const frequency = type === "correct" ? 740 : type === "incorrect" ? 220 : 440;
 
   oscillator.type = "sine";
@@ -552,22 +587,22 @@ function playTone(type) {
   gain.gain.exponentialRampToValueAtTime(0.08, now + 0.015);
   gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
   oscillator.connect(gain);
-  gain.connect(audioContext.destination);
+  gain.connect(context.destination);
   oscillator.start(now);
   oscillator.stop(now + 0.18);
 }
 
 function vibrateDevice(type) {
   if (!state.vibration || !("vibrate" in navigator)) {
-    return;
+    return false;
   }
 
   const pattern = type === "correct" ? [35] : type === "incorrect" ? [80, 35, 80] : [20];
-  navigator.vibrate(pattern);
+  return navigator.vibrate(pattern);
 }
 
 function feedbackEffect(type) {
-  playTone(type);
+  void playTone(type);
   vibrateDevice(type);
 }
 
@@ -776,18 +811,21 @@ themeToggle.addEventListener("change", () => {
   applyTheme();
 });
 
-soundToggle.addEventListener("change", () => {
+soundToggle.addEventListener("change", async () => {
   state.sound = soundToggle.checked;
   localStorage.setItem("app-sound", state.sound ? "on" : "off");
   if (state.sound) {
-    playTone("tap");
+    await playTone("tap");
+    showUpdateStatus(t("soundReady"));
   }
 });
 
 vibrationToggle.addEventListener("change", () => {
   state.vibration = vibrationToggle.checked;
   localStorage.setItem("app-vibration", state.vibration ? "on" : "off");
-  vibrateDevice("tap");
+  if (state.vibration && !vibrateDevice("tap")) {
+    showUpdateStatus(t("vibrationUnsupported"));
+  }
 });
 
 openLanguageModal.addEventListener("click", () => {

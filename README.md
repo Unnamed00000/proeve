@@ -17,6 +17,8 @@ Quiz-app til repetition af EKG-stof.
 - indstillingerne har en knap til tvungen opdatering;
 - indstillingerne har lyd og vibration med gemte valg;
 - sprog vælges i et separat vindue fra indstillingerne;
+- lyd forsøger at aktivere browserens AudioContext efter brugertryk;
+- vibration vises som ikke understøttet, hvis browseren ikke tilbyder vibration;
 - indstillingerne viser appnavn, version og udvikler nederst;
 - interface og quizindhold findes på dansk, russisk og georgisk;
 - layoutet er mobilvenligt og kan publiceres som PWA via GitHub Pages.
