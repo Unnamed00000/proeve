@@ -54,9 +54,15 @@ const vibrationDescription = document.querySelector("#vibrationDescription");
 const updateTitle = document.querySelector("#updateTitle");
 const updateDescription = document.querySelector("#updateDescription");
 const forceUpdateButton = document.querySelector("#forceUpdateButton");
+const settingsAppNameLabel = document.querySelector("#settingsAppNameLabel");
+const settingsAppNameValue = document.querySelector("#settingsAppNameValue");
+const settingsVersionLabel = document.querySelector("#settingsVersionLabel");
+const settingsVersionValue = document.querySelector("#settingsVersionValue");
+const settingsDeveloperLabel = document.querySelector("#settingsDeveloperLabel");
+const settingsDeveloperValue = document.querySelector("#settingsDeveloperValue");
 
 const APP_NAME = "EKG repetition";
-const APP_VERSION = "v1.3.0";
+const APP_VERSION = "v1.4.0";
 const AUTHOR_NAME = "Adam Margoev";
 const letters = ["A", "B", "C", "D"];
 let waitingServiceWorker = null;
@@ -104,6 +110,9 @@ const I18N = {
     next: "Næste side",
     back: "Tilbage",
     close: "Luk",
+    appNameLabel: "App",
+    versionLabel: "Version",
+    developerLabel: "Udvikler",
     author: "Programmet er lavet af Adam Margoev",
     languages: { da: "Dansk", ru: "Русский", ka: "ქართული" }
   },
@@ -148,6 +157,9 @@ const I18N = {
     next: "Следующая страница",
     back: "Назад",
     close: "Закрыть",
+    appNameLabel: "Приложение",
+    versionLabel: "Версия",
+    developerLabel: "Разработчик",
     author: "Программа сделана Адамом Маргоевым",
     languages: { da: "Dansk", ru: "Русский", ka: "ქართული" }
   },
@@ -192,6 +204,9 @@ const I18N = {
     next: "შემდეგი გვერდი",
     back: "უკან",
     close: "დახურვა",
+    appNameLabel: "აპლიკაცია",
+    versionLabel: "ვერსია",
+    developerLabel: "დეველოპერი",
     author: "პროგრამა შექმნა ადამ მარგოევმა",
     languages: { da: "Dansk", ru: "Русский", ka: "ქართული" }
   }
@@ -294,6 +309,12 @@ function applyLanguage() {
   closeLanguageModal.setAttribute("aria-label", t("close"));
   authorText.textContent = t("author");
   versionText.textContent = APP_VERSION;
+  settingsAppNameLabel.textContent = t("appNameLabel");
+  settingsAppNameValue.textContent = APP_NAME;
+  settingsVersionLabel.textContent = t("versionLabel");
+  settingsVersionValue.textContent = APP_VERSION;
+  settingsDeveloperLabel.textContent = t("developerLabel");
+  settingsDeveloperValue.textContent = AUTHOR_NAME;
   updateCurrentLanguageLabel();
   renderLanguageOptions();
   renderCurrentView();

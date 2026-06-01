@@ -73,10 +73,10 @@ button {
 
 .topbar {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 12px;
-  padding: 8px 0 20px;
+  padding: 8px 58px 20px 0;
 }
 
 .title-block {
@@ -227,6 +227,10 @@ button {
 }
 
 .settings-button {
+  position: fixed;
+  top: max(14px, env(safe-area-inset-top));
+  right: max(14px, env(safe-area-inset-right));
+  z-index: 8;
   font-size: 1.2rem;
 }
 
@@ -462,6 +466,33 @@ button {
   font-size: 1.55rem;
 }
 
+.settings-app-info {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg-soft);
+}
+
+.settings-app-info div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.settings-app-info span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.settings-app-info strong {
+  color: var(--primary-strong);
+  text-align: right;
+}
+
 .setting-row,
 .setting-block {
   display: grid;
@@ -644,7 +675,8 @@ button {
   }
 
   .topbar {
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-columns: auto minmax(0, 1fr);
+    padding-right: 56px;
   }
 
   .quiz-toolbar {
@@ -667,6 +699,16 @@ button {
   .update-actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
+  }
+
+  .settings-app-info div {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .settings-app-info strong {
+    text-align: left;
   }
 
   .secondary-button {
