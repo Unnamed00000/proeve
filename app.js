@@ -26,6 +26,12 @@ const feedbackText = document.querySelector("#feedbackText");
 const prevQuestion = document.querySelector("#prevQuestion");
 const nextQuestion = document.querySelector("#nextQuestion");
 const authorText = document.querySelector("#authorText");
+const versionText = document.querySelector("#versionText");
+const updateToast = document.querySelector("#updateToast");
+const updateToastTitle = document.querySelector("#updateToastTitle");
+const updateToastText = document.querySelector("#updateToastText");
+const applyUpdateButton = document.querySelector("#applyUpdateButton");
+const dismissUpdateButton = document.querySelector("#dismissUpdateButton");
 
 const settingsTitle = document.querySelector("#settingsTitle");
 const settingsEyebrow = document.querySelector("#settingsEyebrow");
@@ -33,10 +39,15 @@ const themeTitle = document.querySelector("#themeTitle");
 const themeDescription = document.querySelector("#themeDescription");
 const languageTitle = document.querySelector("#languageTitle");
 const languageDescription = document.querySelector("#languageDescription");
+const updateTitle = document.querySelector("#updateTitle");
+const updateDescription = document.querySelector("#updateDescription");
+const forceUpdateButton = document.querySelector("#forceUpdateButton");
 
 const APP_NAME = "EKG repetition";
+const APP_VERSION = "v1.2.0";
 const AUTHOR_NAME = "Adam Margoev";
 const letters = ["A", "B", "C", "D"];
+let waitingServiceWorker = null;
 
 const I18N = {
   da: {
@@ -52,6 +63,16 @@ const I18N = {
     themeDescription: "Skift mellem lys og mørk visning.",
     language: "Sprog",
     languageDescription: "Vælg appens sprog.",
+    update: "Opdatering",
+    updateDescription: "Tjek og hent den nyeste version af appen.",
+    forceUpdate: "Tving opdatering",
+    checkingUpdate: "Tjekker...",
+    updateReady: "Ny version klar",
+    updateReadyText: "Tryk opdater for at bruge den nyeste version.",
+    updatedToLatest: "Appen er opdateret til nyeste version.",
+    noUpdateFound: "Du har allerede den nyeste version.",
+    updateNow: "Opdater",
+    later: "Senere",
     reset: "Nulstil",
     resetDone: "Svar og aktuelle forsøg er nulstillet.",
     chooseAnswer: "Vælg svar A, B, C eller D.",
@@ -81,6 +102,16 @@ const I18N = {
     themeDescription: "Переключение между светлым и тёмным режимом.",
     language: "Язык",
     languageDescription: "Выберите язык приложения.",
+    update: "Обновление",
+    updateDescription: "Проверить и загрузить последнюю версию приложения.",
+    forceUpdate: "Форс-обновление",
+    checkingUpdate: "Проверяю...",
+    updateReady: "Новая версия готова",
+    updateReadyText: "Нажмите обновить, чтобы использовать новую версию.",
+    updatedToLatest: "Приложение обновлено до последней версии.",
+    noUpdateFound: "У вас уже последняя версия.",
+    updateNow: "Обновить",
+    later: "Позже",
     reset: "Сбросить",
     resetDone: "Ответы и текущие попытки сброшены.",
     chooseAnswer: "Выберите ответ A, B, C или D.",
@@ -110,6 +141,16 @@ const I18N = {
     themeDescription: "გადართვა ღია და მუქ რეჟიმს შორის.",
     language: "ენა",
     languageDescription: "აირჩიეთ აპლიკაციის ენა.",
+    update: "განახლება",
+    updateDescription: "შეამოწმეთ და ჩამოტვირთეთ აპის უახლესი ვერსია.",
+    forceUpdate: "იძულებითი განახლება",
+    checkingUpdate: "მოწმდება...",
+    updateReady: "ახალი ვერსია მზადაა",
+    updateReadyText: "დააჭირეთ განახლებას უახლესი ვერსიის გამოსაყენებლად.",
+    updatedToLatest: "აპი განახლდა უახლეს ვერსიამდე.",
+    noUpdateFound: "თქვენ უკვე გაქვთ უახლესი ვერსია.",
+    updateNow: "განახლება",
+    later: "მოგვიანებით",
     reset: "განულება",
     resetDone: "პასუხები და მიმდინარე მცდელობები განულებულია.",
     chooseAnswer: "აირჩიეთ პასუხი A, B, C ან D.",
@@ -192,6 +233,13 @@ function applyLanguage() {
   themeDescription.textContent = t("themeDescription");
   languageTitle.textContent = t("language");
   languageDescription.textContent = t("languageDescription");
+  updateTitle.textContent = t("update");
+  updateDescription.textContent = t("updateDescription");
+  forceUpdateButton.textContent = t("forceUpdate");
+  updateToastTitle.textContent = t("updateReady");
+  updateToastText.textContent = t("updateReadyText");
+  applyUpdateButton.textContent = t("updateNow");
+  dismissUpdateButton.textContent = t("later");
   resetButton.textContent = t("reset");
   prevQuestion.textContent = t("previous");
   nextQuestion.textContent = t("next");
@@ -199,6 +247,7 @@ function applyLanguage() {
   settingsButton.setAttribute("aria-label", t("settings"));
   closeSettings.setAttribute("aria-label", t("close"));
   authorText.textContent = t("author");
+  versionText.textContent = APP_VERSION;
   renderLanguageOptions();
   renderCurrentView();
 }
@@ -434,6 +483,132 @@ function shuffleArray(items) {
   return copy;
 }
 
+function showUpdateToast() {
+  updateToastTitle.textContent = t("updateReady");
+  updateToastText.textContent = t("updateReadyText");
+  applyUpdateButton.textContent = t("updateNow");
+  dismissUpdateButton.textContent = t("later");
+  applyUpdateButton.classList.remove("hidden");
+  dismissUpdateButton.classList.remove("hidden");
+  updateToast.classList.remove("hidden");
+}
+
+function showUpdateStatus(message) {
+  updateToastTitle.textContent = APP_VERSION;
+  updateToastText.textContent = message;
+  applyUpdateButton.classList.add("hidden");
+  dismissUpdateButton.classList.add("hidden");
+  updateToast.classList.remove("hidden");
+
+  setTimeout(() => {
+    updateToast.classList.add("hidden");
+  }, 2200);
+}
+
+async function clearAppCaches() {
+  if (!("caches" in window)) {
+    return;
+  }
+
+  const keys = await caches.keys();
+  await Promise.all(keys.map((key) => caches.delete(key)));
+}
+
+function applyWaitingUpdate() {
+  if (!waitingServiceWorker) {
+    return;
+  }
+
+  sessionStorage.setItem("app-updated-version", APP_VERSION);
+  waitingServiceWorker.postMessage({ type: "SKIP_WAITING" });
+}
+
+async function forceUpdate() {
+  const originalText = forceUpdateButton.textContent;
+  forceUpdateButton.textContent = t("checkingUpdate");
+  forceUpdateButton.disabled = true;
+
+  try {
+    if ("serviceWorker" in navigator) {
+      const registration = await navigator.serviceWorker.getRegistration();
+
+      if (registration) {
+        await registration.update();
+
+        if (registration.waiting) {
+          waitingServiceWorker = registration.waiting;
+          showUpdateToast();
+          return;
+        }
+      }
+    }
+
+    await clearAppCaches();
+    sessionStorage.setItem("app-updated-version", APP_VERSION);
+    window.location.reload();
+  } catch {
+    showUpdateStatus(t("noUpdateFound"));
+  } finally {
+    forceUpdateButton.disabled = false;
+    forceUpdateButton.textContent = originalText;
+  }
+}
+
+function watchServiceWorker(registration) {
+  if (registration.waiting) {
+    waitingServiceWorker = registration.waiting;
+    showUpdateToast();
+  }
+
+  registration.addEventListener("updatefound", () => {
+    const newWorker = registration.installing;
+
+    if (!newWorker) {
+      return;
+    }
+
+    newWorker.addEventListener("statechange", () => {
+      if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+        waitingServiceWorker = newWorker;
+        showUpdateToast();
+      }
+    });
+  });
+}
+
+function registerServiceWorker() {
+  if (!("serviceWorker" in navigator)) {
+    return;
+  }
+
+  window.addEventListener("load", async () => {
+    const updatedVersion = sessionStorage.getItem("app-updated-version");
+
+    if (updatedVersion === APP_VERSION) {
+      sessionStorage.removeItem("app-updated-version");
+      sessionStorage.removeItem("app-reloading-after-update");
+      showUpdateStatus(t("updatedToLatest"));
+    }
+
+    try {
+      const registration = await navigator.serviceWorker.register("sw.js");
+      watchServiceWorker(registration);
+      await registration.update();
+    } catch {
+      showUpdateStatus(t("noUpdateFound"));
+    }
+  });
+
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (sessionStorage.getItem("app-reloading-after-update") === "1") {
+      return;
+    }
+
+    sessionStorage.setItem("app-reloading-after-update", "1");
+    window.location.reload();
+  });
+}
+
 prevQuestion.addEventListener("click", () => {
   if (state.currentQuestionIndex > 0) {
     state.currentQuestionIndex -= 1;
@@ -478,12 +653,12 @@ themeToggle.addEventListener("change", () => {
 });
 
 resetButton.addEventListener("click", resetProgress);
-
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js");
-  });
-}
+forceUpdateButton.addEventListener("click", forceUpdate);
+applyUpdateButton.addEventListener("click", applyWaitingUpdate);
+dismissUpdateButton.addEventListener("click", () => {
+  updateToast.classList.add("hidden");
+});
 
 applyTheme();
 applyLanguage();
+registerServiceWorker();

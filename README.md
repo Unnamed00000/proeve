@@ -12,6 +12,9 @@ Quiz-app til repetition af EKG-stof.
 - knappen `Nulstil` rydder gamle gemte quiz-svar og starter den aktuelle repetition forfra;
 - lys og mørk tema gemmes efter lukning;
 - sprog gemmes efter lukning;
+- appen viser versionsnummer;
+- appen viser besked, når en ny version er klar;
+- indstillingerne har en knap til tvungen opdatering;
 - interface og quizindhold findes på dansk, russisk og georgisk;
 - layoutet er mobilvenligt og kan publiceres som PWA via GitHub Pages.
 
