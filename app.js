@@ -63,7 +63,7 @@ const settingsDeveloperLabel = document.querySelector("#settingsDeveloperLabel")
 const settingsDeveloperValue = document.querySelector("#settingsDeveloperValue");
 
 const APP_NAME = "EKG repetition";
-const APP_VERSION = "v1.6.0";
+const APP_VERSION = "v1.7.0";
 const AUTHOR_NAME = "Adam Margoev";
 const letters = ["A", "B", "C", "D"];
 let waitingServiceWorker = null;

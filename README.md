@@ -5,7 +5,7 @@ Quiz-app til repetition af EKG-stof.
 ## Funktioner
 
 - startsiden viser mapper;
-- mappen `EKG repetition` indeholder fem emner;
+- mappen `EKG repetition` indeholder seks emner;
 - hvert emne starter en ny repetition med tilfældig rækkefølge på spørgsmål;
 - svarmulighederne A, B, C og D blandes ved hver ny repetition;
 - valgte svar gemmes ikke efter lukning;

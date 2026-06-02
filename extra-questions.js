@@ -62,6 +62,73 @@ EKG_IMAGE_QUESTIONS.i18n = {
   }
 };
 
+const ST_T_WAVE_QUESTIONS = {
+  id: "st-segment-t-tak",
+  title: "ST-segment, T-tak",
+  description: "ST-elevation, ST-depression, T-takker, QT-interval og forlænget QT.",
+  i18n: {
+    ru: {
+      title: "ST-сегмент, зубец T",
+      description: "ST-элевация, ST-депрессия, зубец T, QT-интервал и удлинённый QT."
+    },
+    ka: {
+      title: "ST სეგმენტი, T ტალღა",
+      description: "ST ელევაცია, ST დეპრესია, T ტალღა, QT ინტერვალი და გახანგრძლივებული QT."
+    }
+  },
+  questions: [
+    {text:"Hvad er EKG-kriteriet for ST-segment depression i materialet?",options:["Horisontal eller nedadskrånende ST-depression ≥ 0,5 mm ved J-punktet","ST-elevation > 2 mm i alle afledninger","Kort PR-interval under 120 ms","QTc over 500 ms alene"],answer:0,explanation:"Materialet angiver ST-depression som horisontal eller nedadskrånende ST-depression på mindst 0,5 mm ved J-punktet."},
+    {text:"Hvornår er ST-depression mest signifikant ifølge materialet?",options:["Når den findes i mindst 2 anatomisk sammenhængende afledninger","Når den kun ses i aVR","Når den kun ses efter T-takken","Når QRS altid er smalt"],answer:0,explanation:"ST-depression bliver klinisk mere relevant, når den ses i mindst to anatomisk sammenhængende afledninger."},
+    {text:"Hvilken form for ST-depression nævnes som kriterium?",options:["Horisontal eller nedadskrånende","Kun opadskrånende","Kun buet ST-elevation","Kun ST-depression efter P-takken"],answer:0,explanation:"Kriteriet er horisontal eller nedadskrånende ST-depression, målt ved J-punktet."},
+    {text:"Hvor stor skal ST-depression mindst være ved J-punktet?",options:["0,5 mm","0,05 mm","5 mm","10 mm"],answer:0,explanation:"Materialet bruger grænsen ≥ 0,5 mm, hvilket svarer til en halv lille firkant på EKG-papir."},
+    {text:"Hvilken tilstand kan være iskæmisk årsag til ST-depression?",options:["Iskæmisk hjertesygdom","Genetisk disposition alene","Kort PR-interval","Normal T-tak-amplitude"],answer:0,explanation:"ST-depression kan være iskæmisk, og materialet nævner iskæmisk hjertesygdom som årsag."},
+    {text:"Hvilken ikke-iskæmisk årsag til ST-depression nævnes i materialet?",options:["Hyperventilation","Torsades de pointes","Wenckebach-mønster","AV-dissociation"],answer:0,explanation:"Hyperventilation står blandt de ikke-iskæmiske årsager til ST-depression."},
+    {text:"Hvilken medicinrelateret årsag til ST-depression nævnes?",options:["Digoxin","Insulin","Paracetamol","Adrenalin"],answer:0,explanation:"Digoxin nævnes som en mulig ikke-iskæmisk årsag til ST-depression."},
+    {text:"Hvilken elektrolytforstyrrelse nævnes som årsag til ST-depression?",options:["Hypokaliæmi","Hypernatriæmi","Hyperkalcæmi","Hypermagnesiæmi"],answer:0,explanation:"Materialet nævner hypokaliæmi som en mulig årsag til ST-depression."},
+    {text:"Hvad betyder STEMI i materialets sammenhæng?",options:["ST-elevation myokardieinfarkt","ST-depression uden iskæmi","Kort QT-syndrom","Normal T-tak-variant"],answer:0,explanation:"STEMI beskriver myokardieinfarkt med ST-elevation."},
+    {text:"Hvad er hovedkriteriet for ST-elevation i de fleste afledninger?",options:["ST-elevation > 1 mm ved J-punktet i mindst 2 anatomisk sammenhængende afledninger","ST-depression ≥ 0,5 mm i én afledning","QTc > 500 ms","T-tak under 1 mm"],answer:0,explanation:"Materialet angiver > 1 mm ST-elevation ved J-punktet i mindst to anatomisk sammenhængende afledninger."},
+    {text:"Hvilke afledninger har særlige grænser for ST-elevation?",options:["V2 og V3","aVR og V1","I og aVL","II og III"],answer:0,explanation:"Materialet undtager V2 og V3 fra den almindelige >1 mm-grænse og bruger særlige alders- og kønsgrænser."},
+    {text:"Hvad er ST-elevation-grænsen i V2-V3 for mænd ≥ 40 år?",options:["≥ 0,2 mV","≥ 0,25 mV","≥ 0,15 mV","≥ 0,05 mV"],answer:0,explanation:"For mænd på 40 år eller mere angiver materialet ≥ 0,2 mV i V2-V3."},
+    {text:"Hvad er ST-elevation-grænsen i V2-V3 for mænd under 40 år?",options:["≥ 0,25 mV","≥ 0,2 mV","≥ 0,15 mV","≥ 0,5 mV"],answer:0,explanation:"For mænd under 40 år angives grænsen som ≥ 0,25 mV i V2-V3."},
+    {text:"Hvad er ST-elevation-grænsen i V2-V3 for kvinder?",options:["≥ 0,15 mV","≥ 0,25 mV","≥ 0,2 mV","≥ 1,0 mV"],answer:0,explanation:"For kvinder angiver materialet ≥ 0,15 mV i V2-V3."},
+    {text:"Hvilken iskæmisk årsag nævnes ved ST-elevation?",options:["Myokardieinfarkt","Hypokaliæmi","Normal variant","Hyperventilation"],answer:0,explanation:"Myokardieinfarkt er den centrale iskæmiske årsag ved ST-elevation."},
+    {text:"Hvilken ikke-iskæmisk årsag til ST-elevation nævnes?",options:["Perikarditis","Mobitz type II","3. grads AV-blok","Forlænget PR-interval"],answer:0,explanation:"Perikarditis nævnes som en ikke-iskæmisk årsag til ST-elevation."},
+    {text:"Hvilken ledningsforstyrrelse nævnes som årsag til ST-elevation?",options:["Left bundle branch block","1. grads AV-blok","Sinusarytmi","Kort QT"],answer:0,explanation:"LBBB kan give ST-forandringer og nævnes i materialet som årsag til ST-elevation."},
+    {text:"Hvad repræsenterer T-takken på EKG?",options:["Repolarisering af ventriklerne","Depolarisering af atrierne","AV-knudens forsinkelse","Starten af QRS"],answer:0,explanation:"T-takken repræsenterer ventriklernes repolarisering."},
+    {text:"Hvordan er T-takken normalt orienteret ifølge materialet?",options:["Opret i alle afledninger undtagen aVR og V1","Inverteret i alle afledninger","Kun synlig i V2 og V3","Altid negativ i II"],answer:0,explanation:"Materialet beskriver T-takken som opret i alle afledninger undtagen aVR og V1, hvor den kan være inverteret."},
+    {text:"Hvad er normal maksimal T-tak-amplitude i ekstremitetsafledninger?",options:["< 5 mm","< 10 mm","< 15 mm","< 0,5 mm"],answer:0,explanation:"I limb leads er normal T-tak-amplitude under 5 mm ifølge materialet."},
+    {text:"Hvad er normal maksimal T-tak-amplitude i V1-V6?",options:["< 10 mm","< 5 mm","< 2 mm","< 20 mm"],answer:0,explanation:"I V1-V6 angiver materialet normal T-tak-amplitude under 10 mm."},
+    {text:"Hvordan beskrives en normal T-tak i form?",options:["Afrundet og asymmetrisk","Spids og symmetrisk","Altid flad","Altid todelt"],answer:0,explanation:"Normal T-tak er normalt afrundet og asymmetrisk."},
+    {text:"Hvad kan høje og spidse T-takker tyde på?",options:["Hyperkaliæmi","Hypotermi alene","Forlænget PR-interval","3. grads AV-blok"],answer:0,explanation:"Materialet knytter peaked/tall T waves til hyperkaliæmi."},
+    {text:"Hvad er serumkalium-grænsen for hyperkaliæmi i materialet?",options:["> 5,5 mmol/L","> 4,0 mmol/L","> 2,5 mmol/L","> 10 mmol/L"],answer:0,explanation:"Hyperkaliæmi beskrives som forhøjet serumkalium, i materialet over 5,5 mmol/L."},
+    {text:"Hvilket kriterium passer med tall T waves i ekstremitetsafledninger?",options:["> 5 mm i limb leads","> 1 mm i limb leads","< 5 mm i limb leads","QTc > 500 ms"],answer:0,explanation:"Tall T waves defineres blandt andet som peakede T-takker over 5 mm i limb leads."},
+    {text:"Hvilket kriterium passer med tall T waves i V1-V6?",options:["> 10 mm i V1-V6","> 5 mm i V1-V6","< 10 mm i V1-V6","0,5 mm ved J-punktet"],answer:0,explanation:"I V1-V6 angives tall T waves som mere end 10 mm."},
+    {text:"Hvilket signal er øget ved tall T waves ifølge materialet?",options:["Repolarisationssignal","AV-ledningssignal","Atriedepolarisering","PR-segment"],answer:0,explanation:"Tall T waves beskrives som udtryk for øget repolarisationssignal."},
+    {text:"Hvilken årsag til tall T waves nævnes ud over hyperkaliæmi?",options:["Myokardieinfarkt","Mobitz I","Kort PR alene","Normal QTc alene"],answer:0,explanation:"Myokardieinfarkt nævnes som en mulig årsag til høje T-takker."},
+    {text:"Hvad er EKG-kriteriet for inverterede T-takker i materialet?",options:["Negativ T-tak ≥ 1 mm dyb i mindst 2 sammenhængende afledninger, med undtagelse af aVR og V1","Positiv T-tak > 10 mm i én afledning","ST-elevation > 1 mm i alle afledninger","QT under 120 ms"],answer:0,explanation:"Inverterede T-takker kræver negativ T-tak på mindst 1 mm i to eller flere sammenhængende afledninger, eksklusive aVR og V1."},
+    {text:"Hvad betyder T-tak-inversion fysiologisk i materialet?",options:["Reversal of repolarisation current","Forsinket AV-overledning","Kortere ventrikulær repolarisering","Kun øget serumkalcium"],answer:0,explanation:"Materialet beskriver T-tak-inversion som en omvendt repolarisationsstrøm."},
+    {text:"Hvilken hyppig årsag til inverterede T-takker nævnes på skærmbilledet?",options:["Myokardieinfarkt","1. grads AV-blok","Normal PR-interval","Kort RR-interval"],answer:0,explanation:"Skærmbilledet angiver myokardieinfarkt som en udbredt årsag til T-tak-inversion."},
+    {text:"Hvilken pulmonal årsag til inverterede T-takker nævnes?",options:["Lungeemboli","Astma uden belastning","Pneumoni alene","KOL alene"],answer:0,explanation:"Pulmonary embolism/lungeemboli nævnes som en mulig årsag til inverterede T-takker."},
+    {text:"Hvilken neurologisk årsag til inverterede T-takker nævnes?",options:["Forhøjet intrakranielt tryk","Migræne uden EKG-forandring","Lavt blodsukker","AV-dissociation"],answer:0,explanation:"Raised intracranial pressure står blandt årsagerne til T-tak-inversion."},
+    {text:"Hvad repræsenterer QT-intervallet?",options:["Varigheden af ventrikulær depolarisering og repolarisering","Kun atriernes depolarisering","Kun AV-knudens forsinkelse","Afstanden mellem to P-takker"],answer:0,explanation:"QT-intervallet repræsenterer den samlede tid for ventrikulær depolarisering og repolarisering."},
+    {text:"Hvorfor bruger man QTc?",options:["Fordi QT-intervallet varierer med hjertefrekvensen","Fordi PR-intervallet altid er kort","Fordi ST-elevation ikke kan måles","Fordi T-takken altid er negativ"],answer:0,explanation:"QT varierer med hjertefrekvensen, og QTc korrigerer for denne variation."},
+    {text:"Hvilke afledninger anbefales til at finde det længste QT-interval?",options:["Lead II eller V5-V6","Kun aVR","Kun V1","Kun III"],answer:0,explanation:"Materialet angiver, at man tager det længste interval i lead II eller V5-V6."},
+    {text:"Hvilken formel for QTc står i materialet?",options:["QTc = QT / √RR","QTc = RR / QT","QTc = PR + QRS","QTc = ST / RR"],answer:0,explanation:"Materialet viser Bazett-lignende korrektion: QTc = QT divideret med kvadratroden af RR."},
+    {text:"Hvis QT er 0,420 sek og RR er 1,000 sek, hvad bliver QTc?",options:["0,420 sek","1,420 sek","0,210 sek","4,20 sek"],answer:0,explanation:"QTc = 0,420 / √1,000 = 0,420 sek."},
+    {text:"Hvor mange små firkanter bruges i eksemplet til QT-målingen?",options:["10,5 små firkanter","5 små firkanter","2 små firkanter","20 små firkanter"],answer:0,explanation:"Eksemplet viser QT = 10,5 små firkanter × 40 ms = 0,420 sek."},
+    {text:"Hvor lang tid svarer én lille firkant til i QT-eksemplet?",options:["40 ms","20 ms","100 ms","200 ms"],answer:0,explanation:"Ved standard EKG-papir svarer én lille firkant i eksemplet til 40 ms."},
+    {text:"Hvordan beregnes RR i materialets eksempel?",options:["5 × 0,200 sek = 1,000 sek","10,5 × 40 sek = 420 sek","QT / PR","ST × RR"],answer:0,explanation:"Skærmbilledet viser RR = 5 × 0,200 ms/sek, altså 1,000 sek i eksemplet."},
+    {text:"Hvad er grænsen for forlænget QT hos mænd?",options:["> 440 ms","> 460 ms","> 500 ms kun","< 120 ms"],answer:0,explanation:"Materialet angiver QT-interval > 440 ms som forlænget hos mænd."},
+    {text:"Hvad er grænsen for forlænget QT hos kvinder?",options:["> 460 ms","> 440 ms","> 200 ms","< 100 ms"],answer:0,explanation:"Materialet angiver QT-interval > 460 ms som forlænget hos kvinder."},
+    {text:"Hvad er QTc > 500 ms associeret med?",options:["Torsades de pointes","Mobitz type I alene","Normal T-tak","Kort PR-interval"],answer:0,explanation:"Materialet angiver, at QTc over 500 ms er associeret med torsades de pointes."},
+    {text:"Hvad beskriver forlænget QT fysiologisk?",options:["Forlængelse af ventrikulær depolarisering og repolarisering","Forkortet ventrikulær repolarisering","Kun øget P-tak-amplitude","Kun ST-depression"],answer:0,explanation:"Forlænget QT beskrives som prolongation af ventrikulær depolarisation og repolarisation."},
+    {text:"Hvilken elektrolytforstyrrelse nævnes som årsag til forlænget QT?",options:["Hypokalcæmi","Hyperkaliæmi alene","Hypernatriæmi","Hyperkloræmi"],answer:0,explanation:"Materialet nævner elektrolytforstyrrelser som hypokalcæmi, hypokaliæmi og hypomagnesiæmi."},
+    {text:"Hvilken lægemiddelgruppe nævnes som årsag til forlænget QT?",options:["Antipsykotika","Antacida alene","Antihistaminer uden undtagelse","Betablokkere alene"],answer:0,explanation:"Materialet nævner blandt andet antipsykotika sammen med antiarytmika, antibiotika og antidepressiva."},
+    {text:"Hvilken temperaturrelateret årsag til forlænget QT nævnes?",options:["Hypotermi","Feber","Normal temperatur","Hypertermi alene"],answer:0,explanation:"Hypotermi nævnes som mulig årsag til forlænget QT."},
+    {text:"Hvilken arvelig årsagstype nævnes ved forlænget QT?",options:["Genetik","Kun kost","Kun fysisk aktivitet","Kun alder"],answer:0,explanation:"Materialet nævner genetics som en del af ætiologien ved forlænget QT."}
+  ]
+};
+
 function cloneQuestion(question) {
   return {
     ...question,
@@ -80,6 +147,10 @@ const ekgFolder = globalThis.QUIZ_FOLDERS?.find((folder) => folder.id === "ekg-r
 
 if (ekgFolder && !ekgFolder.materials.some((material) => material.id === EKG_IMAGE_QUESTIONS.id)) {
   ekgFolder.materials.push(EKG_IMAGE_QUESTIONS);
+}
+
+if (ekgFolder && !ekgFolder.materials.some((material) => material.id === ST_T_WAVE_QUESTIONS.id)) {
+  ekgFolder.materials.push(ST_T_WAVE_QUESTIONS);
 }
 
 if (ekgFolder && !ekgFolder.materials.some((material) => material.id === "blandet-ekg-test")) {
