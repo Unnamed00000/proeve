@@ -27,6 +27,7 @@ const questionCounter = document.querySelector("#questionCounter");
 const scorePill = document.querySelector("#scorePill");
 const progressFill = document.querySelector("#progressFill");
 const questionText = document.querySelector("#questionText");
+const questionImage = document.querySelector("#questionImage");
 const answersList = document.querySelector("#answersList");
 const feedbackText = document.querySelector("#feedbackText");
 const prevQuestion = document.querySelector("#prevQuestion");
@@ -62,7 +63,7 @@ const settingsDeveloperLabel = document.querySelector("#settingsDeveloperLabel")
 const settingsDeveloperValue = document.querySelector("#settingsDeveloperValue");
 
 const APP_NAME = "EKG repetition";
-const APP_VERSION = "v1.5.0";
+const APP_VERSION = "v1.6.0";
 const AUTHOR_NAME = "Adam Margoev";
 const letters = ["A", "B", "C", "D"];
 let waitingServiceWorker = null;
@@ -468,6 +469,15 @@ function renderQuestion() {
     total: state.sessionQuestions.length
   });
   questionText.textContent = localized(question, "text");
+  if (question.image) {
+    questionImage.src = question.image;
+    questionImage.alt = localized(question, "text");
+    questionImage.classList.remove("hidden");
+  } else {
+    questionImage.removeAttribute("src");
+    questionImage.alt = "";
+    questionImage.classList.add("hidden");
+  }
   answersList.innerHTML = "";
 
   question.displayOptions.forEach((option, optionIndex) => {

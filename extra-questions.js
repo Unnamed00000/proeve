@@ -51,6 +51,52 @@ const EKG_IMAGE_QUESTIONS = {
   ]
 };
 
-function cloneQuestion(question){return {text:question.text,image:question.image||'',options:[...question.options],answer:question.answer,explanation:question.explanation};}
-QUIZ_MATERIALS.push(EKG_IMAGE_QUESTIONS);
-QUIZ_MATERIALS.push({id:'blandet-ekg-test',title:'Blandet EKG Test',description:'Alle EKG-spørgsmål samlet i én blandet test. Spørgsmål og svar blandes ved hver start.',questions:QUIZ_MATERIALS.flatMap((material)=>material.questions.map(cloneQuestion))});
+EKG_IMAGE_QUESTIONS.i18n = {
+  ru: {
+    title: "EKG-картинки",
+    description: "Тренировка распознавания EKG по картинкам без подсказок на самом изображении."
+  },
+  ka: {
+    title: "EKG სურათები",
+    description: "EKG-ის ამოცნობის ვარჯიში სურათებით, ტექსტური მინიშნებების გარეშე."
+  }
+};
+
+function cloneQuestion(question) {
+  return {
+    ...question,
+    image: question.image || "",
+    options: question.options.map((option) => {
+      if (option && typeof option === "object") {
+        return { ...option };
+      }
+
+      return option;
+    })
+  };
+}
+
+const ekgFolder = globalThis.QUIZ_FOLDERS?.find((folder) => folder.id === "ekg-repetition");
+
+if (ekgFolder && !ekgFolder.materials.some((material) => material.id === EKG_IMAGE_QUESTIONS.id)) {
+  ekgFolder.materials.push(EKG_IMAGE_QUESTIONS);
+}
+
+if (ekgFolder && !ekgFolder.materials.some((material) => material.id === "blandet-ekg-test")) {
+  ekgFolder.materials.push({
+    id: "blandet-ekg-test",
+    title: "Blandet EKG Test",
+    description: "Alle EKG-spørgsmål samlet i én blandet test. Spørgsmål og svar blandes ved hver start.",
+    i18n: {
+      ru: {
+        title: "Смешанный EKG тест",
+        description: "Все EKG-вопросы собраны в один смешанный тест. Вопросы и ответы перемешиваются при каждом запуске."
+      },
+      ka: {
+        title: "შერეული EKG ტესტი",
+        description: "ყველა EKG კითხვა ერთ შერეულ ტესტშია. კითხვები და პასუხები ყოველი დაწყებისას ირევა."
+      }
+    },
+    questions: ekgFolder.materials.flatMap((material) => material.questions.map(cloneQuestion))
+  });
+}
