@@ -4,7 +4,7 @@ Quiz-app til repetition af EKG-stof.
 
 ## Funktioner
 
-- startsiden viser mapper;
+- startsiden viser mapperne `EKG repetition`, `Upper limb`, `Lower limb` og `Head and neck`;
 - mappen `EKG repetition` indeholder seks emner;
 - hvert emne starter en ny repetition med tilfældig rækkefølge på spørgsmål;
 - svarmulighederne A, B, C og D blandes ved hver ny repetition;

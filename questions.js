@@ -265,6 +265,36 @@ const QUIZ_FOLDERS = [
         ]
       }
     ]
+  },
+  {
+    id: "upper-limb",
+    title: "Upper limb",
+    description: "Materialer om overekstremiteten tilføjes her.",
+    i18n: {
+      ru: { description: "Здесь будут материалы по верхней конечности." },
+      ka: { description: "აქ დაემატება ზედა კიდურის მასალები." }
+    },
+    materials: []
+  },
+  {
+    id: "lower-limb",
+    title: "Lower limb",
+    description: "Materialer om underekstremiteten tilføjes her.",
+    i18n: {
+      ru: { description: "Здесь будут материалы по нижней конечности." },
+      ka: { description: "აქ დაემატება ქვედა კიდურის მასალები." }
+    },
+    materials: []
+  },
+  {
+    id: "head-and-neck",
+    title: "Head and neck",
+    description: "Materialer om hoved og hals tilføjes her.",
+    i18n: {
+      ru: { description: "Здесь будут материалы по голове и шее." },
+      ka: { description: "აქ დაემატება თავისა და კისრის მასალები." }
+    },
+    materials: []
   }
 ];
 
