@@ -6,6 +6,7 @@ Quiz-app til repetition af EKG-stof.
 
 - startsiden viser mapperne `EKG repetition`, `Upper limb`, `Lower limb` og `Head and neck`;
 - mappen `EKG repetition` indeholder seks emner;
+- mappen `Upper limb` indeholder syv faglige emner, en billedtest uden labels og en blandet test med 264 spørgsmål;
 - hvert emne starter en ny repetition med tilfældig rækkefølge på spørgsmål;
 - svarmulighederne A, B, C og D blandes ved hver ny repetition;
 - valgte svar gemmes ikke efter lukning;
@@ -25,7 +26,7 @@ Quiz-app til repetition af EKG-stof.
 
 ## Redigering af spørgsmål
 
-Spørgsmålene ligger i `questions.js`, og ekstra billedspørgsmål ligger i `extra-questions.js`.
+Spørgsmålene ligger i `questions.js`, `extra-questions.js` og `upper-limb-questions.js`.
 
 Strukturen er:
 

@@ -63,7 +63,7 @@ const settingsDeveloperLabel = document.querySelector("#settingsDeveloperLabel")
 const settingsDeveloperValue = document.querySelector("#settingsDeveloperValue");
 
 const APP_NAME = "EKG repetition";
-const APP_VERSION = "v1.8.0";
+const APP_VERSION = "v2.0.0";
 const AUTHOR_NAME = "Adam Margoev";
 const letters = ["A", "B", "C", "D"];
 let waitingServiceWorker = null;
@@ -355,7 +355,10 @@ function renderFolders() {
   foldersGrid.innerHTML = "";
 
   getFolders().forEach((folder) => {
-    const totalQuestions = folder.materials.reduce((sum, material) => sum + material.questions.length, 0);
+    const sourceMaterials = folder.materials.filter(
+      (material) => material.id !== "blandet-ekg-test" && !material.id.endsWith("-mixed")
+    );
+    const totalQuestions = sourceMaterials.reduce((sum, material) => sum + material.questions.length, 0);
     const button = document.createElement("button");
     button.className = "material-card folder-card";
     button.type = "button";

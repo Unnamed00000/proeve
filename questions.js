@@ -269,10 +269,10 @@ const QUIZ_FOLDERS = [
   {
     id: "upper-limb",
     title: "Upper limb",
-    description: "Materialer om overekstremiteten tilføjes her.",
+    description: "Knogler, led, muskler, kar, lymfe og nerver i overekstremiteten.",
     i18n: {
-      ru: { description: "Здесь будут материалы по верхней конечности." },
-      ka: { description: "აქ დაემატება ზედა კიდურის მასალები." }
+      ru: { description: "Кости, суставы, мышцы, сосуды, лимфоотток и нервы верхней конечности." },
+      ka: { description: "ზედა კიდურის ძვლები, სახსრები, კუნთები, სისხლძარღვები, ლიმფა და ნერვები." }
     },
     materials: []
   },
