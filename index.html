@@ -41,6 +41,16 @@
           <h2 id="materialsHeading">Emner</h2>
           <p id="materialsIntro">Vælg et emne for at starte en ny repetition.</p>
         </div>
+        <section class="answer-mode-panel hidden" id="answerModePanel" aria-labelledby="answerModeTitle">
+          <div>
+            <h3 id="answerModeTitle">Svarmetode</h3>
+            <p id="answerModeDescription">Vælg svarmetode for alle Upper limb-emner.</p>
+          </div>
+          <div class="answer-mode-control" role="group" aria-label="Svarmetode">
+            <button class="answer-mode-button" id="choiceModeButton" type="button" data-mode="choice" aria-pressed="true">A–D</button>
+            <button class="answer-mode-button" id="manualModeButton" type="button" data-mode="manual" aria-pressed="false">Skriv svar</button>
+          </div>
+        </section>
         <div class="materials-grid" id="materialsGrid"></div>
       </section>
 
@@ -72,7 +82,7 @@
 
       <footer class="app-footer">
         <span id="authorText">Programmet er lavet af Adam Margoev</span>
-        <span class="version-text" id="versionText">v2.0.0</span>
+        <span class="version-text" id="versionText">v2.1.0</span>
       </footer>
     </main>
 
@@ -155,7 +165,7 @@
           </div>
           <div>
             <span id="settingsVersionLabel">Version</span>
-            <strong id="settingsVersionValue">v2.0.0</strong>
+            <strong id="settingsVersionValue">v2.1.0</strong>
           </div>
           <div>
             <span id="settingsDeveloperLabel">Udvikler</span>

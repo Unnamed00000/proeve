@@ -22,6 +22,12 @@ const foldersHeading = document.querySelector("#foldersHeading");
 const foldersIntro = document.querySelector("#foldersIntro");
 const materialsHeading = document.querySelector("#materialsHeading");
 const materialsIntro = document.querySelector("#materialsIntro");
+const answerModePanel = document.querySelector("#answerModePanel");
+const answerModeTitle = document.querySelector("#answerModeTitle");
+const answerModeDescription = document.querySelector("#answerModeDescription");
+const answerModeControl = document.querySelector(".answer-mode-control");
+const choiceModeButton = document.querySelector("#choiceModeButton");
+const manualModeButton = document.querySelector("#manualModeButton");
 const materialLabel = document.querySelector("#materialLabel");
 const questionCounter = document.querySelector("#questionCounter");
 const scorePill = document.querySelector("#scorePill");
@@ -63,7 +69,7 @@ const settingsDeveloperLabel = document.querySelector("#settingsDeveloperLabel")
 const settingsDeveloperValue = document.querySelector("#settingsDeveloperValue");
 
 const APP_NAME = "EKG repetition";
-const APP_VERSION = "v2.0.0";
+const APP_VERSION = "v2.1.0";
 const AUTHOR_NAME = "Adam Margoev";
 const letters = ["A", "B", "C", "D"];
 let waitingServiceWorker = null;
@@ -77,6 +83,13 @@ const I18N = {
     foldersIntro: "Vælg en mappe for at åbne emnerne.",
     materialsHeading: "Emner",
     materialsIntro: "Vælg et emne for at starte en ny repetition.",
+    answerModeTitle: "Svarmetode",
+    answerModeDescription: "Vælg svarmetode for alle Upper limb-emner.",
+    choiceMode: "A–D",
+    manualMode: "Skriv svar",
+    manualPlaceholder: "Skriv dit svar her",
+    checkAnswer: "Kontrollér svar",
+    enterAnswer: "Skriv et svar før du kontrollerer.",
     settings: "Indstillinger",
     settingsEyebrow: "Kontrolpanel",
     theme: "Tema",
@@ -126,6 +139,13 @@ const I18N = {
     foldersIntro: "Выберите папку, чтобы открыть темы.",
     materialsHeading: "Темы",
     materialsIntro: "Выберите тему, чтобы начать новое повторение.",
+    answerModeTitle: "Способ ответа",
+    answerModeDescription: "Выберите способ ответа для всех тем Upper limb.",
+    choiceMode: "A–D",
+    manualMode: "Ввести ответ",
+    manualPlaceholder: "Введите свой ответ",
+    checkAnswer: "Проверить ответ",
+    enterAnswer: "Введите ответ перед проверкой.",
     settings: "Настройки",
     settingsEyebrow: "Панель управления",
     theme: "Тема",
@@ -175,6 +195,13 @@ const I18N = {
     foldersIntro: "აირჩიეთ საქაღალდე თემების გასახსნელად.",
     materialsHeading: "თემები",
     materialsIntro: "აირჩიეთ თემა ახალი გამეორების დასაწყებად.",
+    answerModeTitle: "პასუხის მეთოდი",
+    answerModeDescription: "აირჩიეთ პასუხის მეთოდი Upper limb-ის ყველა თემისთვის.",
+    choiceMode: "A–D",
+    manualMode: "პასუხის ჩაწერა",
+    manualPlaceholder: "ჩაწერეთ პასუხი",
+    checkAnswer: "პასუხის შემოწმება",
+    enterAnswer: "შემოწმებამდე ჩაწერეთ პასუხი.",
     settings: "პარამეტრები",
     settingsEyebrow: "მართვის პანელი",
     theme: "თემა",
@@ -224,6 +251,7 @@ const state = {
   theme: localStorage.getItem("app-theme") || "light",
   sound: localStorage.getItem("app-sound") !== "off",
   vibration: localStorage.getItem("app-vibration") !== "off",
+  upperLimbAnswerMode: localStorage.getItem("upper-limb-answer-mode") === "manual" ? "manual" : "choice",
   currentView: "folders",
   currentFolder: null,
   currentMaterial: null,
@@ -288,6 +316,11 @@ function applyLanguage() {
   foldersIntro.textContent = t("foldersIntro");
   materialsHeading.textContent = t("materialsHeading");
   materialsIntro.textContent = t("materialsIntro");
+  answerModeTitle.textContent = t("answerModeTitle");
+  answerModeDescription.textContent = t("answerModeDescription");
+  answerModeControl.setAttribute("aria-label", t("answerModeTitle"));
+  choiceModeButton.textContent = t("choiceMode");
+  manualModeButton.textContent = t("manualMode");
   settingsTitle.textContent = t("settings");
   settingsEyebrow.textContent = t("settingsEyebrow");
   themeTitle.textContent = t("theme");
@@ -377,6 +410,7 @@ function renderFolders() {
 
 function renderMaterials() {
   materialsGrid.innerHTML = "";
+  renderAnswerModePanel();
 
   state.currentFolder.materials.forEach((material) => {
     const button = document.createElement("button");
@@ -390,6 +424,33 @@ function renderMaterials() {
     button.addEventListener("click", () => openMaterial(material.id));
     materialsGrid.appendChild(button);
   });
+}
+
+function renderAnswerModePanel() {
+  const isUpperLimb = state.currentFolder?.id === "upper-limb";
+  answerModePanel.classList.toggle("hidden", !isUpperLimb);
+
+  if (!isUpperLimb) {
+    return;
+  }
+
+  choiceModeButton.setAttribute("aria-pressed", String(state.upperLimbAnswerMode === "choice"));
+  manualModeButton.setAttribute("aria-pressed", String(state.upperLimbAnswerMode === "manual"));
+}
+
+function setUpperLimbAnswerMode(mode) {
+  if (mode !== "choice" && mode !== "manual") {
+    return;
+  }
+
+  feedbackEffect("tap");
+  state.upperLimbAnswerMode = mode;
+  localStorage.setItem("upper-limb-answer-mode", mode);
+  renderAnswerModePanel();
+}
+
+function usesManualAnswerMode() {
+  return state.currentFolder?.id === "upper-limb" && state.upperLimbAnswerMode === "manual";
 }
 
 function renderCurrentView() {
@@ -483,6 +544,14 @@ function renderQuestion() {
   }
   answersList.innerHTML = "";
 
+  if (usesManualAnswerMode()) {
+    renderManualAnswer(question, selectedAnswer);
+    renderFeedback(question, selectedAnswer);
+    renderNavigation();
+    renderScore();
+    return;
+  }
+
   question.displayOptions.forEach((option, optionIndex) => {
     const button = document.createElement("button");
     button.className = "answer-button";
@@ -509,6 +578,108 @@ function renderQuestion() {
   renderScore();
 }
 
+const MANUAL_ANSWER_STOP_WORDS = new Set([
+  "a", "af", "at", "den", "der", "det", "en", "er", "et", "for", "fra", "har", "i", "kun", "med", "og", "om", "pa", "på", "som", "til", "ved", "via",
+  "а", "без", "в", "для", "и", "из", "к", "на", "не", "по", "с", "со", "что", "это",
+  "და", "ეს", "არის", "რომ", "ზე", "ში"
+]);
+
+function normalizeManualAnswer(value) {
+  return String(value)
+    .toLocaleLowerCase(I18N[state.language].locale)
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim();
+}
+
+function meaningfulAnswerTokens(value) {
+  return normalizeManualAnswer(value)
+    .split(" ")
+    .filter((token) => token.length > 1 && !MANUAL_ANSWER_STOP_WORDS.has(token));
+}
+
+function manualAnswerMatches(submittedAnswer, correctAnswer) {
+  const submitted = normalizeManualAnswer(submittedAnswer);
+  const correct = normalizeManualAnswer(correctAnswer);
+
+  if (!submitted || !correct) {
+    return false;
+  }
+
+  if (submitted === correct) {
+    return true;
+  }
+
+  const submittedTokens = new Set(meaningfulAnswerTokens(submitted));
+  const correctTokens = [...new Set(meaningfulAnswerTokens(correct))];
+
+  if (!submittedTokens.size || !correctTokens.length) {
+    return false;
+  }
+
+  const matchedTokens = correctTokens.filter((token) => submittedTokens.has(token)).length;
+  const coverage = matchedTokens / correctTokens.length;
+  const precision = matchedTokens / submittedTokens.size;
+  return coverage >= 0.7 && precision >= 0.7;
+}
+
+function renderManualAnswer(question, selectedAnswer) {
+  const form = document.createElement("form");
+  form.className = "manual-answer-form";
+
+  const input = document.createElement("input");
+  input.className = "manual-answer-input";
+  input.type = "text";
+  input.autocomplete = "off";
+  input.spellcheck = false;
+  input.placeholder = t("manualPlaceholder");
+  input.setAttribute("aria-label", t("manualPlaceholder"));
+
+  const submitButton = document.createElement("button");
+  submitButton.className = "primary-button manual-answer-submit";
+  submitButton.type = "submit";
+  submitButton.textContent = t("checkAnswer");
+
+  if (selectedAnswer && typeof selectedAnswer === "object") {
+    input.value = selectedAnswer.value;
+    input.disabled = true;
+    submitButton.disabled = true;
+  }
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    submitManualAnswer(input.value, input);
+  });
+
+  form.append(input, submitButton);
+  answersList.appendChild(form);
+}
+
+function submitManualAnswer(value, input) {
+  const submittedValue = value.trim();
+
+  if (!submittedValue) {
+    input.setCustomValidity(t("enterAnswer"));
+    input.reportValidity();
+    return;
+  }
+
+  input.setCustomValidity("");
+  const question = state.sessionQuestions[state.currentQuestionIndex];
+  const correctOption = question.displayOptions[question.displayAnswer];
+  const correctText = localized(correctOption, "text") || correctOption;
+  const isCorrect = manualAnswerMatches(submittedValue, correctText);
+
+  state.answers[state.currentQuestionIndex] = {
+    mode: "manual",
+    value: submittedValue,
+    isCorrect
+  };
+  feedbackEffect(isCorrect ? "correct" : "incorrect");
+  renderQuestion();
+}
+
 function chooseAnswer(optionIndex) {
   const question = state.sessionQuestions[state.currentQuestionIndex];
   feedbackEffect(optionIndex === question.displayAnswer ? "correct" : "incorrect");
@@ -520,7 +691,22 @@ function renderFeedback(question, selectedAnswer) {
   feedbackText.className = "feedback";
 
   if (selectedAnswer === undefined) {
-    feedbackText.textContent = t("chooseAnswer");
+    feedbackText.textContent = usesManualAnswerMode() ? t("manualPlaceholder") : t("chooseAnswer");
+    return;
+  }
+
+  if (selectedAnswer && typeof selectedAnswer === "object") {
+    if (selectedAnswer.isCorrect) {
+      feedbackText.classList.add("good");
+      feedbackText.textContent = `${t("correct")} ${localized(question, "explanation")}`;
+      return;
+    }
+
+    const correctOption = question.displayOptions[question.displayAnswer];
+    const correctText = localized(correctOption, "text") || correctOption;
+    const punctuatedCorrectText = /[.!?]$/.test(correctText) ? correctText : `${correctText}.`;
+    feedbackText.classList.add("bad");
+    feedbackText.textContent = `${t("incorrect")} ${t("rightAnswer")}: ${punctuatedCorrectText} ${localized(question, "explanation")}`;
     return;
   }
 
@@ -544,7 +730,8 @@ function renderScore() {
   const answeredIndexes = Object.keys(state.answers);
   const correctCount = answeredIndexes.filter((index) => {
     const question = state.sessionQuestions[Number(index)];
-    return state.answers[index] === question.displayAnswer;
+    const answer = state.answers[index];
+    return answer && typeof answer === "object" ? answer.isCorrect : answer === question.displayAnswer;
   }).length;
 
   scorePill.textContent = `${correctCount} / ${state.sessionQuestions.length}`;
@@ -858,6 +1045,8 @@ languageModal.addEventListener("click", (event) => {
 });
 
 resetButton.addEventListener("click", resetProgress);
+choiceModeButton.addEventListener("click", () => setUpperLimbAnswerMode("choice"));
+manualModeButton.addEventListener("click", () => setUpperLimbAnswerMode("manual"));
 forceUpdateButton.addEventListener("click", forceUpdate);
 applyUpdateButton.addEventListener("click", applyWaitingUpdate);
 dismissUpdateButton.addEventListener("click", () => {
