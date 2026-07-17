@@ -69,9 +69,10 @@ const settingsDeveloperLabel = document.querySelector("#settingsDeveloperLabel")
 const settingsDeveloperValue = document.querySelector("#settingsDeveloperValue");
 
 const APP_NAME = "EKG repetition";
-const APP_VERSION = "v2.1.0";
+const APP_VERSION = "v2.2.0";
 const AUTHOR_NAME = "Adam Margoev";
 const letters = ["A", "B", "C", "D"];
+const MANUAL_ANSWER_FOLDER_IDS = new Set(["upper-limb", "lower-limb"]);
 let waitingServiceWorker = null;
 let audioContext = null;
 
@@ -84,7 +85,7 @@ const I18N = {
     materialsHeading: "Emner",
     materialsIntro: "Vælg et emne for at starte en ny repetition.",
     answerModeTitle: "Svarmetode",
-    answerModeDescription: "Vælg svarmetode for alle Upper limb-emner.",
+    answerModeDescription: "Vælg svarmetode for anatomiemnerne.",
     choiceMode: "A–D",
     manualMode: "Skriv svar",
     manualPlaceholder: "Skriv dit svar her",
@@ -140,7 +141,7 @@ const I18N = {
     materialsHeading: "Темы",
     materialsIntro: "Выберите тему, чтобы начать новое повторение.",
     answerModeTitle: "Способ ответа",
-    answerModeDescription: "Выберите способ ответа для всех тем Upper limb.",
+    answerModeDescription: "Выберите способ ответа для анатомических тем.",
     choiceMode: "A–D",
     manualMode: "Ввести ответ",
     manualPlaceholder: "Введите свой ответ",
@@ -196,7 +197,7 @@ const I18N = {
     materialsHeading: "თემები",
     materialsIntro: "აირჩიეთ თემა ახალი გამეორების დასაწყებად.",
     answerModeTitle: "პასუხის მეთოდი",
-    answerModeDescription: "აირჩიეთ პასუხის მეთოდი Upper limb-ის ყველა თემისთვის.",
+    answerModeDescription: "აირჩიეთ პასუხის მეთოდი ანატომიის თემებისთვის.",
     choiceMode: "A–D",
     manualMode: "პასუხის ჩაწერა",
     manualPlaceholder: "ჩაწერეთ პასუხი",
@@ -251,7 +252,10 @@ const state = {
   theme: localStorage.getItem("app-theme") || "light",
   sound: localStorage.getItem("app-sound") !== "off",
   vibration: localStorage.getItem("app-vibration") !== "off",
-  upperLimbAnswerMode: localStorage.getItem("upper-limb-answer-mode") === "manual" ? "manual" : "choice",
+  answerModes: {
+    "upper-limb": localStorage.getItem("upper-limb-answer-mode") === "manual" ? "manual" : "choice",
+    "lower-limb": localStorage.getItem("lower-limb-answer-mode") === "manual" ? "manual" : "choice"
+  },
   currentView: "folders",
   currentFolder: null,
   currentMaterial: null,
@@ -427,30 +431,42 @@ function renderMaterials() {
 }
 
 function renderAnswerModePanel() {
-  const isUpperLimb = state.currentFolder?.id === "upper-limb";
-  answerModePanel.classList.toggle("hidden", !isUpperLimb);
+  const folderId = state.currentFolder?.id;
+  const supportsManualMode = MANUAL_ANSWER_FOLDER_IDS.has(folderId);
+  answerModePanel.classList.toggle("hidden", !supportsManualMode);
 
-  if (!isUpperLimb) {
+  if (!supportsManualMode) {
     return;
   }
 
-  choiceModeButton.setAttribute("aria-pressed", String(state.upperLimbAnswerMode === "choice"));
-  manualModeButton.setAttribute("aria-pressed", String(state.upperLimbAnswerMode === "manual"));
+  const mode = getAnswerModeForCurrentFolder();
+  choiceModeButton.setAttribute("aria-pressed", String(mode === "choice"));
+  manualModeButton.setAttribute("aria-pressed", String(mode === "manual"));
 }
 
-function setUpperLimbAnswerMode(mode) {
+function getAnswerModeForCurrentFolder() {
+  return state.answerModes[state.currentFolder?.id] || "choice";
+}
+
+function setFolderAnswerMode(mode) {
   if (mode !== "choice" && mode !== "manual") {
     return;
   }
 
+  const folderId = state.currentFolder?.id;
+
+  if (!MANUAL_ANSWER_FOLDER_IDS.has(folderId)) {
+    return;
+  }
+
   feedbackEffect("tap");
-  state.upperLimbAnswerMode = mode;
-  localStorage.setItem("upper-limb-answer-mode", mode);
+  state.answerModes[folderId] = mode;
+  localStorage.setItem(`${folderId}-answer-mode`, mode);
   renderAnswerModePanel();
 }
 
 function usesManualAnswerMode() {
-  return state.currentFolder?.id === "upper-limb" && state.upperLimbAnswerMode === "manual";
+  return MANUAL_ANSWER_FOLDER_IDS.has(state.currentFolder?.id) && getAnswerModeForCurrentFolder() === "manual";
 }
 
 function renderCurrentView() {
@@ -1045,8 +1061,8 @@ languageModal.addEventListener("click", (event) => {
 });
 
 resetButton.addEventListener("click", resetProgress);
-choiceModeButton.addEventListener("click", () => setUpperLimbAnswerMode("choice"));
-manualModeButton.addEventListener("click", () => setUpperLimbAnswerMode("manual"));
+choiceModeButton.addEventListener("click", () => setFolderAnswerMode("choice"));
+manualModeButton.addEventListener("click", () => setFolderAnswerMode("manual"));
 forceUpdateButton.addEventListener("click", forceUpdate);
 applyUpdateButton.addEventListener("click", applyWaitingUpdate);
 dismissUpdateButton.addEventListener("click", () => {

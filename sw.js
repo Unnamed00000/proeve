@@ -1,4 +1,4 @@
-const CACHE_NAME = "study-quiz-v13";
+const CACHE_NAME = "study-quiz-v14";
 const ASSETS = [
   "./",
   "index.html",
@@ -6,6 +6,7 @@ const ASSETS = [
   "questions.js",
   "extra-questions.js",
   "upper-limb-questions.js",
+  "lower-limb-questions.js",
   "app.js",
   "manifest.webmanifest",
   "icons/icon.svg",
@@ -19,7 +20,17 @@ const ASSETS = [
   "assets/upper-limb-clean/nerves.jpg",
   "assets/upper-limb-clean/scapula.jpg",
   "assets/upper-limb-clean/shoulder-muscles.jpg",
-  "assets/upper-limb-clean/veins-lymph.jpg"
+  "assets/upper-limb-clean/veins-lymph.jpg",
+  "assets/lower-limb-clean/arteries.svg",
+  "assets/lower-limb-clean/femur-tibia-foot.svg",
+  "assets/lower-limb-clean/foot-muscles.svg",
+  "assets/lower-limb-clean/hip-bone.svg",
+  "assets/lower-limb-clean/hip-muscles.svg",
+  "assets/lower-limb-clean/knee-ligaments.svg",
+  "assets/lower-limb-clean/leg-compartments.svg",
+  "assets/lower-limb-clean/nerves.svg",
+  "assets/lower-limb-clean/thigh-compartments.svg",
+  "assets/lower-limb-clean/veins-lymph.svg"
 ];
 
 self.addEventListener("install", (event) => {

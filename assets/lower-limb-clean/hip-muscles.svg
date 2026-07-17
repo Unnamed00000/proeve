@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 540" role="img">
+
+<defs>
+  <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+    <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#0b3551" flood-opacity=".12"/>
+  </filter>
+</defs>
+<rect width="900" height="540" rx="24" fill="#f8fdff"/>
+
+
+<g filter="url(#softShadow)" stroke="#102a43" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M160 120 C240 80 325 105 345 190 C365 280 296 368 210 415 C165 350 121 244 160 120 Z" fill="#ffffff"/>
+  <path d="M190 135 C258 100 320 130 326 198 C292 198 253 215 218 250 C197 222 186 183 190 135 Z" fill="#69c36d"/>
+  <path d="M235 254 C280 225 327 231 347 276 C318 315 281 341 238 355 C218 322 214 287 235 254 Z" fill="#00a6a6"/>
+  <path d="M430 135 C498 110 555 143 552 205 C550 278 501 348 438 392 C400 325 386 193 430 135 Z" fill="#ffffff"/>
+  <path d="M455 162 C511 143 542 171 536 220 C504 215 468 229 438 260 C424 219 427 181 455 162 Z" fill="#f4a259"/>
+  <path d="M595 145 C675 115 748 158 752 242 C755 325 698 390 625 421" fill="#ffffff"/>
+  <path d="M614 245 C666 217 708 226 736 268 C704 311 655 331 603 322 C587 291 591 263 614 245 Z" fill="#7f56d9"/>
+</g>
+<circle cx="284" cy="180" r="14" fill="#006d77"/>
+<circle cx="675" cy="274" r="14" fill="#006d77"/>
+
+</svg>

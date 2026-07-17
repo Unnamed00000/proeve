@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 540" role="img">
+
+<defs>
+  <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+    <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#0b3551" flood-opacity=".12"/>
+  </filter>
+</defs>
+<rect width="900" height="540" rx="24" fill="#f8fdff"/>
+
+
+<g filter="url(#softShadow)" stroke="#102a43" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M210 78 C160 116 141 226 151 363 C160 470 254 470 267 364 C285 224 268 112 210 78 Z" fill="#ffffff"/>
+  <path d="M210 102 C178 143 170 237 180 350 C185 410 232 412 238 351 C251 239 244 145 210 102 Z" fill="#3fa7d6"/>
+  <path d="M240 130 C284 199 286 318 257 386 C288 377 315 337 320 271 C326 202 294 147 240 130 Z" fill="#f4a259"/>
+  <path d="M183 147 C141 202 137 322 166 390 C127 374 103 320 107 251 C111 185 138 144 183 147 Z" fill="#7f56d9"/>
+  <path d="M530 92 C475 136 455 232 463 358 C472 459 572 462 588 359 C610 225 586 132 530 92 Z" fill="#ffffff"/>
+  <path d="M517 130 C482 181 476 295 496 382 C521 405 558 397 566 355 C577 249 563 169 517 130 Z" fill="#3fa7d6"/>
+  <path d="M564 145 C620 205 621 330 586 397 C628 379 654 319 650 248 C646 187 617 149 564 145 Z" fill="#f4a259"/>
+</g>
+<circle cx="210" cy="230" r="14" fill="#006d77"/>
+<circle cx="285" cy="260" r="14" fill="#006d77"/>
+
+</svg>
