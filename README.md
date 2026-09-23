@@ -4,11 +4,12 @@ Quiz-app til repetition af EKG-stof.
 
 ## Funktioner
 
-- startsiden viser mapperne `EKG repetition`, `Upper limb`, `Lower limb` og `Head and neck`;
+- startsiden viser mapperne `EKG repetition`, `Upper limb`, `Lower limb`, `Head and neck` og `Regioner i Ansigt og Hals`;
 - mappen `EKG repetition` indeholder seks emner;
 - mappen `Upper limb` indeholder syv faglige emner, en billedtest uden labels og en blandet test med 264 spørgsmål;
 - mappen `Lower limb` indeholder syv faglige emner, en billedtest uden labels og en blandet test med over 280 spørgsmål;
-- `Upper limb` og `Lower limb` kan trænes med enten fire svarmuligheder (A-D) eller manuelt indtastede svar;
+- mappen `Regioner i Ansigt og Hals` indeholder syv regionale emner og en blandet test med omkring 210 spørgsmål fra PDF-materialet;
+- `Upper limb`, `Lower limb` og `Regioner i Ansigt og Hals` kan trænes med enten fire svarmuligheder (A-D) eller manuelt indtastede svar;
 - hvert emne starter en ny repetition med tilfældig rækkefølge på spørgsmål;
 - svarmulighederne A, B, C og D blandes ved hver ny repetition;
 - valgte svar gemmes ikke efter lukning;
@@ -28,7 +29,7 @@ Quiz-app til repetition af EKG-stof.
 
 ## Redigering af spørgsmål
 
-Spørgsmålene ligger i `questions.js`, `extra-questions.js`, `upper-limb-questions.js` og `lower-limb-questions.js`.
+Spørgsmålene ligger i `questions.js`, `extra-questions.js`, `upper-limb-questions.js`, `lower-limb-questions.js` og `body-regions-questions.js`.
 
 Strukturen er:
 

@@ -295,6 +295,22 @@ const QUIZ_FOLDERS = [
       ka: { description: "აქ დაემატება თავისა და კისრის მასალები." }
     },
     materials: []
+  },
+  {
+    id: "face-neck-regions",
+    title: "Regioner i Ansigt og Hals",
+    description: "Topografiske regioner, grænser, relief, palpation, lag og klinik fra hele materialet.",
+    i18n: {
+      ru: {
+        title: "Regioner i Ansigt og Hals",
+        description: "Топографические регионы, границы, рельеф, пальпация, слои и клиническое значение из всего материала."
+      },
+      ka: {
+        title: "Regioner i Ansigt og Hals",
+        description: "ტოპოგრაფიული რეგიონები, საზღვრები, რელიეფი, პალპაცია, შრეები და კლინიკური მნიშვნელობა მთელი მასალიდან."
+      }
+    },
+    materials: []
   }
 ];
 

@@ -69,10 +69,10 @@ const settingsDeveloperLabel = document.querySelector("#settingsDeveloperLabel")
 const settingsDeveloperValue = document.querySelector("#settingsDeveloperValue");
 
 const APP_NAME = "EKG repetition";
-const APP_VERSION = "v2.2.0";
+const APP_VERSION = "v2.3.0";
 const AUTHOR_NAME = "Adam Margoev";
 const letters = ["A", "B", "C", "D"];
-const MANUAL_ANSWER_FOLDER_IDS = new Set(["upper-limb", "lower-limb"]);
+const MANUAL_ANSWER_FOLDER_IDS = new Set(["upper-limb", "lower-limb", "face-neck-regions"]);
 let waitingServiceWorker = null;
 let audioContext = null;
 
@@ -254,7 +254,8 @@ const state = {
   vibration: localStorage.getItem("app-vibration") !== "off",
   answerModes: {
     "upper-limb": localStorage.getItem("upper-limb-answer-mode") === "manual" ? "manual" : "choice",
-    "lower-limb": localStorage.getItem("lower-limb-answer-mode") === "manual" ? "manual" : "choice"
+    "lower-limb": localStorage.getItem("lower-limb-answer-mode") === "manual" ? "manual" : "choice",
+    "face-neck-regions": localStorage.getItem("face-neck-regions-answer-mode") === "manual" ? "manual" : "choice"
   },
   currentView: "folders",
   currentFolder: null,
